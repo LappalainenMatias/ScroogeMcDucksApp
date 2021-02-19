@@ -35,7 +35,7 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:layout_margin="16dp"
-        android:layout_gravity="bottom||end"
+        android:layout_gravity="bottom|end"
         android:id="@+id/floatingActionButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
