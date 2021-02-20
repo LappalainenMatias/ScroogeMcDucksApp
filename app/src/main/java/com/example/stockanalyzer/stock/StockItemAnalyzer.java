@@ -1,7 +1,6 @@
 package com.example.stockanalyzer.stock;
 
 
-
 import androidx.core.util.Pair;
 
 import java.util.ArrayList;
@@ -24,7 +23,7 @@ public class StockItemAnalyzer {
 
     /**
      * @return Pair<Longest upward trend size, Pair < Start of longest upward trend, End of longest upward trend>>
-     *     If statistics are out of the range then return new Pair<>(0, new Pair<GregorianCalendar, GregorianCalendar>(null, null)
+     * If statistics are out of the range then return new Pair<>(0, new Pair<GregorianCalendar, GregorianCalendar>(null, null)
      */
     public Pair<Integer, Pair<GregorianCalendar, GregorianCalendar>> getLongestUpwardTrend(
             GregorianCalendar rangeStart, GregorianCalendar rangeEnd) {
@@ -32,7 +31,7 @@ public class StockItemAnalyzer {
         List<StockStatistic> cutStatistics = cut(statistics, rangeStart, rangeEnd);
         Collections.sort(cutStatistics, new CalendarComparator());
 
-        if(cutStatistics.size() == 0){
+        if (cutStatistics.size() == 0) {
             return new Pair<>(0, new Pair<GregorianCalendar, GregorianCalendar>(null, null));
         }
 
@@ -69,7 +68,6 @@ public class StockItemAnalyzer {
     }
 
     /**
-     *
      * @return List of dates, volumes and price changes.
      * The list is ordered by volume and price change.
      * So if two dates have the same volume, the one with the more significant price change should come first.
@@ -78,7 +76,7 @@ public class StockItemAnalyzer {
             GregorianCalendar rangeStart, GregorianCalendar rangeEnd) {
         List<StockStatistic> statistics = createList(stockStatisticByCalendar);
         List<StockStatistic> cutStatistics = cut(statistics, rangeStart, rangeEnd);
-        if(cutStatistics.size() == 0){
+        if (cutStatistics.size() == 0) {
             return new ArrayList<>();
         }
         ArrayList<TradingVolumeAndPriceChange> tradingVolumeAndPriceChanges = createTradingVolumeAndPriceChanges(cutStatistics);
@@ -88,12 +86,30 @@ public class StockItemAnalyzer {
 
     /**
      * SMA 5 is a average value of closing prices between days N-1 to N-5 for day N
+     *
      * @return List of OpeningPriceSMA5 objects. List is ordered by the
      * difference between the opening price of the day and the calculated SMA 5 price of the day
      */
-    public ArrayList<OpeningPriceSMA5> getBestOpeningPriceComparedToSMA5(GregorianCalendar rangeStart, GregorianCalendar rangeEnd){
-        ArrayList<OpeningPriceSMA5> openingPriceSMA5s = new ArrayList<>();
+    public ArrayList<OpeningPriceSMA5> getOpeningPricesComparedToSMA5(GregorianCalendar rangeStart, GregorianCalendar rangeEnd) {
+        List<StockStatistic> statistics = createList(stockStatisticByCalendar);
+        List<StockStatistic> cutStatistics = cut(statistics, rangeStart, rangeEnd);
+        Collections.sort(cutStatistics, new CalendarComparator());
+        ArrayList<OpeningPriceSMA5> openingPriceSMA5s = getOpeningPriceSMA5s(cutStatistics);
+        Collections.sort(openingPriceSMA5s, new OpeningPriceAndSMA5DifferenceComparator());
+        return openingPriceSMA5s;
+    }
 
+    private ArrayList<OpeningPriceSMA5> getOpeningPriceSMA5s(List<StockStatistic> statistics) {
+        ArrayList<OpeningPriceSMA5> openingPriceSMA5s = new ArrayList<>();
+        if (statistics.size() < 6)
+            return new ArrayList<>();
+
+        for (int index = 5; index < statistics.size(); index++) {
+            double last5ClosePriceSum = statistics.get(index - 5).closePrice + statistics.get(index - 4).closePrice +
+                    statistics.get(index - 3).closePrice + statistics.get(index - 2).closePrice + statistics.get(index - 1).closePrice;
+            double SMA5 = last5ClosePriceSum / 5;
+            openingPriceSMA5s.add(new OpeningPriceSMA5(statistics.get(index).date, SMA5, statistics.get(index).openPrice));
+        }
         return openingPriceSMA5s;
     }
 
@@ -130,11 +146,21 @@ public class StockItemAnalyzer {
 
     private ArrayList<TradingVolumeAndPriceChange> createTradingVolumeAndPriceChanges(List<StockStatistic> cutStatistics) {
         ArrayList tradingVolumesAndPriceChanges = new ArrayList();
-        for(StockStatistic stockStatistic : cutStatistics){
+        for (StockStatistic stockStatistic : cutStatistics) {
             tradingVolumesAndPriceChanges.add(new TradingVolumeAndPriceChange(stockStatistic.date,
                     stockStatistic.volume, Math.abs(stockStatistic.closePrice - stockStatistic.openPrice)));
         }
         return tradingVolumesAndPriceChanges;
+    }
+
+    private class OpeningPriceAndSMA5DifferenceComparator implements Comparator<OpeningPriceSMA5> {
+        @Override
+        public int compare(OpeningPriceSMA5 o1, OpeningPriceSMA5 o2) {
+            if(o1.getOpeningPriceAndSMA5Difference() < o2.getOpeningPriceAndSMA5Difference()) {
+                return 1;
+            }
+            return -1;
+        }
     }
 
     private class VolumeAndPriceChangeCompator implements Comparator<TradingVolumeAndPriceChange> {
@@ -142,8 +168,8 @@ public class StockItemAnalyzer {
         public int compare(TradingVolumeAndPriceChange o1, TradingVolumeAndPriceChange o2) {
             if (o1.tradingVolume < o2.tradingVolume) {
                 return 1;
-            } else if (o1.tradingVolume == o2.tradingVolume){
-                if (o1.priceChange < o2.priceChange){
+            } else if (o1.tradingVolume == o2.tradingVolume) {
+                if (o1.priceChange < o2.priceChange) {
                     return 1;
                 } else {
                     return -1;
