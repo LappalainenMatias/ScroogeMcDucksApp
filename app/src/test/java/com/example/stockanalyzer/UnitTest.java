@@ -20,7 +20,7 @@ public class UnitTest {
 
     private HashMap<GregorianCalendar, StockStatistic> exampleData1() {
         /**
-         * DO NOT EDIT THIS DATA! This data has been used in tests.
+         * DO NOT EDIT THIS DATA! This data is currently used in tests.
          */
         HashMap<GregorianCalendar, StockStatistic> stats = new HashMap<>();
         stats.put(new GregorianCalendar(2010, 0, 1),
@@ -49,7 +49,7 @@ public class UnitTest {
 
     private HashMap<GregorianCalendar, StockStatistic> exampleData2() {
         /**
-         * DO NOT EDIT THIS DATA! This data has been used in tests.
+         * DO NOT EDIT THIS DATA! This data is currently used in tests.
          */
         HashMap<GregorianCalendar, StockStatistic> stats = new HashMap<>();
         stats.put(new GregorianCalendar(2021, 1, 13),
@@ -284,16 +284,16 @@ public class UnitTest {
     }
 
     @Test
-    public void getSMA5_exampleData1() {
+    public void getOpeningPricesComparedToSMA5_exampleData1() {
         int id = 0;
         String name = "Apple";
         GregorianCalendar rangeStart = new GregorianCalendar(2000, 6, 1);
         GregorianCalendar rangeEnd = new GregorianCalendar(2025, 6, 2);
-        HashMap<GregorianCalendar, StockStatistic> stockStatisticByCalendar = exampleData2();
+        HashMap<GregorianCalendar, StockStatistic> stockStatisticByCalendar = exampleData1();
         StockItem stockItem = new StockItem(id, name, rangeStart, rangeEnd, stockStatisticByCalendar);
         StockItemAnalyzer stockItemAnalyzer = new StockItemAnalyzer(stockItem);
 
-        ArrayList<OpeningPriceSMA5> openingPriceSMA5s = stockItemAnalyzer.getBestOpeningPriceComparedToSMA5(rangeStart, rangeEnd);
+        ArrayList<OpeningPriceSMA5> openingPriceSMA5s = stockItemAnalyzer.getOpeningPricesComparedToSMA5(rangeStart, rangeEnd);
         OpeningPriceSMA5 first = openingPriceSMA5s.get(0);
         OpeningPriceSMA5 second = openingPriceSMA5s.get(1);
 
@@ -306,6 +306,31 @@ public class UnitTest {
         Assert.assertEquals(new GregorianCalendar(2010, 0, 6).getTimeInMillis(),
                 second.gregorianCalendar.getTimeInMillis());
         Assert.assertEquals(0.991036, second.getOpeningPriceAndSMA5Difference(), 0.0001);
+    }
+
+    @Test
+    public void getOpeningPricesComparedToSMA5_exampleData2() {
+        int id = 0;
+        String name = "Apple";
+        GregorianCalendar rangeStart = new GregorianCalendar(2000, 6, 1);
+        GregorianCalendar rangeEnd = new GregorianCalendar(2025, 6, 2);
+        HashMap<GregorianCalendar, StockStatistic> stockStatisticByCalendar = exampleData2();
+        StockItem stockItem = new StockItem(id, name, rangeStart, rangeEnd, stockStatisticByCalendar);
+        StockItemAnalyzer stockItemAnalyzer = new StockItemAnalyzer(stockItem);
+
+        ArrayList<OpeningPriceSMA5> openingPriceSMA5s = stockItemAnalyzer.getOpeningPricesComparedToSMA5(rangeStart, rangeEnd);
+        OpeningPriceSMA5 first = openingPriceSMA5s.get(0);
+        OpeningPriceSMA5 second = openingPriceSMA5s.get(1);
+
+        Assert.assertEquals(2, openingPriceSMA5s.size());
+
+        Assert.assertEquals(1.000802, first.getOpeningPriceAndSMA5Difference(), 0.0001);
+        Assert.assertEquals(new GregorianCalendar(2021, 1, 18).getTimeInMillis(),
+                first.gregorianCalendar.getTimeInMillis());
+
+        Assert.assertEquals(new GregorianCalendar(2021, 1, 23).getTimeInMillis(),
+                second.gregorianCalendar.getTimeInMillis());
+        Assert.assertEquals(0.995043, second.getOpeningPriceAndSMA5Difference(), 0.0001);
     }
 
     @Test
