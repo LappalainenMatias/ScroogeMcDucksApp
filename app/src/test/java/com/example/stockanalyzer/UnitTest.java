@@ -63,8 +63,8 @@ public class UnitTest {
         stats.put(new GregorianCalendar(2021, 1, 18),
                 (new StockStatistic().setDate(new GregorianCalendar(2021, 1, 18))
                         .setClosePrice(136.2).setVolume(4000).setOpenPrice(136.99).setHighPrice(137.0).setLowPrice(135.5)));
-        stats.put(new GregorianCalendar(2021, 1, 19),
-                (new StockStatistic().setDate(new GregorianCalendar(2021, 1, 19))
+        stats.put(new GregorianCalendar(2021, 1, 23),
+                (new StockStatistic().setDate(new GregorianCalendar(2021, 1, 23))
                         .setClosePrice(137.4).setVolume(1000).setOpenPrice(137.20).setHighPrice(138.0).setLowPrice(135.2)));
         return stats;
     }
@@ -141,16 +141,38 @@ public class UnitTest {
         GregorianCalendar endOfLongestUpward = output.second.second;
 
         Assert.assertEquals((new GregorianCalendar(2021, 1, 17).getTimeInMillis()), startOfLongestUpward.getTimeInMillis());
-        Assert.assertEquals((new GregorianCalendar(2021, 1, 19).getTimeInMillis()), endOfLongestUpward.getTimeInMillis());
+        Assert.assertEquals((new GregorianCalendar(2021, 1, 23).getTimeInMillis()), endOfLongestUpward.getTimeInMillis());
         Assert.assertEquals(3, upwardTrendLength);
+    }
+
+    @Test
+    public void getLongestUpwardTrend_rangeEndBeforeRangeStart(){
+        int id = 0;
+        String name = "Apple";
+        GregorianCalendar rangeStart = new GregorianCalendar(2025, 0, 1);
+        GregorianCalendar rangeEnd = new GregorianCalendar(2010, 0, 30);
+        HashMap<GregorianCalendar, StockStatistic> stockStatisticByCalendar = getStockStatistics_example2();
+
+        StockItem stockItem = new StockItem(id, name, rangeStart, rangeEnd, stockStatisticByCalendar);
+        StockItemAnalyzer stockItemAnalyzer = new StockItemAnalyzer(stockItem);
+        Pair<Integer, Pair<GregorianCalendar, GregorianCalendar>> output =
+                stockItemAnalyzer.getLongestUpwardTrend(stockItem.rangeStart, stockItem.rangeEnd);
+
+        int upwardTrendLength = output.first;
+        GregorianCalendar startOfLongestUpward = output.second.first;
+        GregorianCalendar endOfLongestUpward = output.second.second;
+
+        Assert.assertEquals(null , startOfLongestUpward);
+        Assert.assertEquals( null, endOfLongestUpward);
+        Assert.assertEquals(0, upwardTrendLength);
     }
 
     @Test
     public void getLongestUpwardTrend_statisticsNotInRange(){
         int id = 0;
         String name = "Apple";
-        GregorianCalendar rangeStart = new GregorianCalendar(2050, 0, 1);
-        GregorianCalendar rangeEnd = new GregorianCalendar(2050, 0, 30);
+        GregorianCalendar rangeStart = new GregorianCalendar(2010, 6, 1);
+        GregorianCalendar rangeEnd = new GregorianCalendar(2010, 6, 2);
         HashMap<GregorianCalendar, StockStatistic> stockStatisticByCalendar = getStockStatistics_example2();
 
         StockItem stockItem = new StockItem(id, name, rangeStart, rangeEnd, stockStatisticByCalendar);
