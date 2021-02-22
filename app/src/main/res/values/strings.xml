@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">StockAnalyzer</string>
     <string name="searchHint">Search...</string>
+    <string name="menu">Menu</string>
+    <string name="search">Search</string>
+    <string name="stocks_name">Stocks name</string>
+    <string name="day_month_year_day_month_year">Day/Month/Year - Day/Month/Year</string>
+
 </resources>
