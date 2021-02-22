@@ -47,6 +47,7 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -55,10 +56,12 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/customErrorInputLayout1"
             android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:drawablePadding="8dp"
+                android:drawableLeft="@drawable/ic_today_24px"
                 android:id="@+id/editTextDate3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -68,10 +71,12 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/customErrorInputLayout2"
             android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:drawablePadding="8dp"
+                android:drawableLeft="@drawable/ic_today_24px"
                 android:id="@+id/editTextDate2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
