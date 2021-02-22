@@ -10,13 +10,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="14sp"
-        android:text="Stocks name"
+        android:text="@string/stocks_name"
         android:textColor="@color/colorLightBlack"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="12sp"
-        android:text="Day/Month/Year - Day/Month/Year"/>
+        android:text="@string/day_month_year_day_month_year"/>
 
 </LinearLayout>
