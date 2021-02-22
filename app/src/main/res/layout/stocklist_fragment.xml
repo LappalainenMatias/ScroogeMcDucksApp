@@ -9,7 +9,6 @@
     android:clipChildren="false"
     tools:context=".ui.StockListFragment">
 
-
     <View
         android:id="@+id/view"
         android:layout_width="match_parent"
@@ -30,7 +29,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:menu="@menu/menu_stocklist"
         app:title="Stocks"
-        app:titleTextColor="@color/colorWhite" />
+        app:titleTextColor="@color/colorWhite" >
+    </androidx.appcompat.widget.Toolbar>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingActionButton"
@@ -55,8 +55,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view"
-        tools:listitem="@layout/item_stock" >
-
-    </ListView>
+        tools:listitem="@layout/item_stock" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
