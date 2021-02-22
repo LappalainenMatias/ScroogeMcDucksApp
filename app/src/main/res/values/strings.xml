@@ -5,5 +5,8 @@
     <string name="search">Search</string>
     <string name="stocks_name">Stocks name</string>
     <string name="day_month_year_day_month_year">Day/Month/Year - Day/Month/Year</string>
+    <string name="categories_1">Longest upward trend</string>
+    <string name="categories_2">Highest trading volume and most significant stock price change</string>
+    <string name="categories_3">Best opening price compared to 5 day moving average</string>
 
 </resources>
