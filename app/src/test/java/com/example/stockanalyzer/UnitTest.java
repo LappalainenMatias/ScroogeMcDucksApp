@@ -1,8 +1,6 @@
 package com.example.stockanalyzer;
 
-
-import androidx.core.util.Pair;
-
+import com.example.stockanalyzer.stock.LongestUpwardTrend;
 import com.example.stockanalyzer.stock.OpeningPriceSMA5;
 import com.example.stockanalyzer.stock.StockItem;
 import com.example.stockanalyzer.stock.StockItemAnalyzer;
@@ -18,10 +16,10 @@ import java.util.HashMap;
 
 public class UnitTest {
 
+    /**
+     * DO NOT EDIT THIS DATA! This data is currently used in tests.
+     */
     private HashMap<GregorianCalendar, StockStatistic> exampleData1() {
-        /**
-         * DO NOT EDIT THIS DATA! This data is currently used in tests.
-         */
         HashMap<GregorianCalendar, StockStatistic> stats = new HashMap<>();
         stats.put(new GregorianCalendar(2010, 0, 1),
                 (new StockStatistic().setDate(new GregorianCalendar(2010, 0, 1))
@@ -47,10 +45,10 @@ public class UnitTest {
         return stats;
     }
 
+    /**
+     * DO NOT EDIT THIS DATA! This data is currently used in tests.
+     */
     private HashMap<GregorianCalendar, StockStatistic> exampleData2() {
-        /**
-         * DO NOT EDIT THIS DATA! This data is currently used in tests.
-         */
         HashMap<GregorianCalendar, StockStatistic> stats = new HashMap<>();
         stats.put(new GregorianCalendar(2021, 1, 13),
                 (new StockStatistic().setDate(new GregorianCalendar(2021, 1, 13))
@@ -118,16 +116,11 @@ public class UnitTest {
 
         StockItem stockItem = new StockItem(id, name, rangeStart, rangeEnd, stockStatisticByCalendar);
         StockItemAnalyzer stockItemAnalyzer = new StockItemAnalyzer(stockItem);
-        Pair<Integer, Pair<GregorianCalendar, GregorianCalendar>> output =
-                stockItemAnalyzer.getLongestUpwardTrend(stockItem.rangeStart, stockItem.rangeEnd);
+        LongestUpwardTrend output = stockItemAnalyzer.getLongestUpwardTrend(stockItem.rangeStart, stockItem.rangeEnd);
 
-        int upwardTrendLength = output.first;
-        GregorianCalendar startOfLongestUpward = output.second.first;
-        GregorianCalendar endOfLongestUpward = output.second.second;
-
-        Assert.assertEquals(4, upwardTrendLength);
-        Assert.assertEquals((new GregorianCalendar(2010, 0, 2).getTimeInMillis()), startOfLongestUpward.getTimeInMillis());
-        Assert.assertEquals((new GregorianCalendar(2010, 0, 5).getTimeInMillis()), endOfLongestUpward.getTimeInMillis());
+        Assert.assertEquals(4, output.size);
+        Assert.assertEquals((new GregorianCalendar(2010, 0, 2).getTimeInMillis()), output.start.getTimeInMillis());
+        Assert.assertEquals((new GregorianCalendar(2010, 0, 5).getTimeInMillis()), output.end.getTimeInMillis());
     }
 
     @Test
@@ -140,16 +133,11 @@ public class UnitTest {
 
         StockItem stockItem = new StockItem(id, name, rangeStart, rangeEnd, stockStatisticByCalendar);
         StockItemAnalyzer stockItemAnalyzer = new StockItemAnalyzer(stockItem);
-        Pair<Integer, Pair<GregorianCalendar, GregorianCalendar>> output =
-                stockItemAnalyzer.getLongestUpwardTrend(stockItem.rangeStart, stockItem.rangeEnd);
+        LongestUpwardTrend output = stockItemAnalyzer.getLongestUpwardTrend(stockItem.rangeStart, stockItem.rangeEnd);
 
-        int upwardTrendLength = output.first;
-        GregorianCalendar startOfLongestUpward = output.second.first;
-        GregorianCalendar endOfLongestUpward = output.second.second;
-
-        Assert.assertEquals((new GregorianCalendar(2021, 1, 17).getTimeInMillis()), startOfLongestUpward.getTimeInMillis());
-        Assert.assertEquals((new GregorianCalendar(2021, 1, 23).getTimeInMillis()), endOfLongestUpward.getTimeInMillis());
-        Assert.assertEquals(3, upwardTrendLength);
+        Assert.assertEquals((new GregorianCalendar(2021, 1, 17).getTimeInMillis()), output.start.getTimeInMillis());
+        Assert.assertEquals((new GregorianCalendar(2021, 1, 23).getTimeInMillis()), output.end.getTimeInMillis());
+        Assert.assertEquals(3, output.size);
     }
 
     @Test
@@ -162,16 +150,11 @@ public class UnitTest {
 
         StockItem stockItem = new StockItem(id, name, rangeStart, rangeEnd, stockStatisticByCalendar);
         StockItemAnalyzer stockItemAnalyzer = new StockItemAnalyzer(stockItem);
-        Pair<Integer, Pair<GregorianCalendar, GregorianCalendar>> output =
-                stockItemAnalyzer.getLongestUpwardTrend(stockItem.rangeStart, stockItem.rangeEnd);
+        LongestUpwardTrend output = stockItemAnalyzer.getLongestUpwardTrend(stockItem.rangeStart, stockItem.rangeEnd);
 
-        int upwardTrendLength = output.first;
-        GregorianCalendar startOfLongestUpward = output.second.first;
-        GregorianCalendar endOfLongestUpward = output.second.second;
-
-        Assert.assertEquals(null, startOfLongestUpward);
-        Assert.assertEquals(null, endOfLongestUpward);
-        Assert.assertEquals(0, upwardTrendLength);
+        Assert.assertNull(output.start);
+        Assert.assertNull(output.end);
+        Assert.assertEquals(0, output.size);
     }
 
     @Test
@@ -184,16 +167,11 @@ public class UnitTest {
 
         StockItem stockItem = new StockItem(id, name, rangeStart, rangeEnd, stockStatisticByCalendar);
         StockItemAnalyzer stockItemAnalyzer = new StockItemAnalyzer(stockItem);
-        Pair<Integer, Pair<GregorianCalendar, GregorianCalendar>> output =
-                stockItemAnalyzer.getLongestUpwardTrend(stockItem.rangeStart, stockItem.rangeEnd);
+        LongestUpwardTrend output = stockItemAnalyzer.getLongestUpwardTrend(stockItem.rangeStart, stockItem.rangeEnd);
 
-        int upwardTrendLength = output.first;
-        GregorianCalendar startOfLongestUpward = output.second.first;
-        GregorianCalendar endOfLongestUpward = output.second.second;
-
-        Assert.assertEquals(null, startOfLongestUpward);
-        Assert.assertEquals(null, endOfLongestUpward);
-        Assert.assertEquals(0, upwardTrendLength);
+        Assert.assertNull(output.start);
+        Assert.assertNull(output.end);
+        Assert.assertEquals(0, output.size);
     }
 
     @Test
