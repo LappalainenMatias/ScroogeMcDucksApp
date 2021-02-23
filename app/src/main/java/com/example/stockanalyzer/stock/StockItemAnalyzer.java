@@ -13,28 +13,24 @@ import java.util.List;
 
 public class StockItemAnalyzer {
 
-    private StockItem stockItem;
-    private HashMap<GregorianCalendar, StockStatistic> stockStatisticByCalendar;
+    private final HashMap<GregorianCalendar, StockStatistic> stockStatisticByCalendar;
 
     public StockItemAnalyzer(StockItem stockItem) {
-        this.stockItem = stockItem;
         this.stockStatisticByCalendar = stockItem.stockStatisticByCalendar;
     }
 
     /**
-     * @return Pair<Longest upward trend size, Pair < Start of longest upward trend, End of longest upward trend>>
-     * If statistics are out of the range then return new Pair<>(0, new Pair<GregorianCalendar, GregorianCalendar>(null, null)
+     * @return If statistics are out of the range then return new LongestUpwardTrend(0, null, null)
      */
-    public Pair<Integer, Pair<GregorianCalendar, GregorianCalendar>> getLongestUpwardTrend(
+    public LongestUpwardTrend getLongestUpwardTrend(
             GregorianCalendar rangeStart, GregorianCalendar rangeEnd) {
-        List<StockStatistic> statistics = createList(stockStatisticByCalendar);
+        List<StockStatistic> statistics = new ArrayList<>(stockStatisticByCalendar.values());
         List<StockStatistic> cutStatistics = cut(statistics, rangeStart, rangeEnd);
         Collections.sort(cutStatistics, new CalendarComparator());
 
         if (cutStatistics.size() == 0) {
-            return new Pair<>(0, new Pair<GregorianCalendar, GregorianCalendar>(null, null));
+            return new LongestUpwardTrend(0, null, null);
         }
-
 
         int index = 0;
         int longestUpwardTrendStartIndex = 0;
@@ -61,10 +57,7 @@ public class StockItemAnalyzer {
         }
 
         int size = longestUpwardTrendEndIndex - longestUpwardTrendStartIndex + 1;
-        Pair<GregorianCalendar, GregorianCalendar> dateRange = new Pair<>(
-                cutStatistics.get(longestUpwardTrendStartIndex).date,
-                cutStatistics.get(longestUpwardTrendEndIndex).date);
-        return new Pair<>(size, dateRange);
+        return new LongestUpwardTrend(size, cutStatistics.get(longestUpwardTrendStartIndex).date, cutStatistics.get(longestUpwardTrendEndIndex).date);
     }
 
     /**
@@ -74,7 +67,7 @@ public class StockItemAnalyzer {
      */
     public ArrayList<TradingVolumeAndPriceChange> getHighestTradingVolumesAndLargestPriceChanges(
             GregorianCalendar rangeStart, GregorianCalendar rangeEnd) {
-        List<StockStatistic> statistics = createList(stockStatisticByCalendar);
+        List<StockStatistic> statistics = new ArrayList<>(stockStatisticByCalendar.values());
         List<StockStatistic> cutStatistics = cut(statistics, rangeStart, rangeEnd);
         if (cutStatistics.size() == 0) {
             return new ArrayList<>();
@@ -91,7 +84,7 @@ public class StockItemAnalyzer {
      * difference between the opening price of the day and the calculated SMA 5 price of the day
      */
     public ArrayList<OpeningPriceSMA5> getOpeningPricesComparedToSMA5(GregorianCalendar rangeStart, GregorianCalendar rangeEnd) {
-        List<StockStatistic> statistics = createList(stockStatisticByCalendar);
+        List<StockStatistic> statistics = new ArrayList<>(stockStatisticByCalendar.values());
         List<StockStatistic> cutStatistics = cut(statistics, rangeStart, rangeEnd);
         Collections.sort(cutStatistics, new CalendarComparator());
         ArrayList<OpeningPriceSMA5> openingPriceSMA5s = getOpeningPriceSMA5s(cutStatistics);
@@ -113,16 +106,7 @@ public class StockItemAnalyzer {
         return openingPriceSMA5s;
     }
 
-    private List<StockStatistic> createList(HashMap<GregorianCalendar, StockStatistic> stockStatisticByCalendar) {
-        ArrayList<StockStatistic> stockStatistics = new ArrayList<>();
-        for (StockStatistic stockStatistic : stockStatisticByCalendar.values()) {
-            stockStatistics.add(stockStatistic);
-        }
-        return stockStatistics;
-    }
-
-    private List<StockStatistic> cut(List<StockStatistic> stockStatistics,
-                                     GregorianCalendar rangeStart,
+    private List<StockStatistic> cut(List<StockStatistic> stockStatistics, GregorianCalendar rangeStart,
                                      GregorianCalendar rangeEnd) {
         List<StockStatistic> cutted = new ArrayList<>();
         for (StockStatistic stockStatistic : stockStatistics) {
@@ -145,7 +129,7 @@ public class StockItemAnalyzer {
     }
 
     private ArrayList<TradingVolumeAndPriceChange> createTradingVolumeAndPriceChanges(List<StockStatistic> cutStatistics) {
-        ArrayList tradingVolumesAndPriceChanges = new ArrayList();
+        ArrayList<TradingVolumeAndPriceChange> tradingVolumesAndPriceChanges = new ArrayList<>();
         for (StockStatistic stockStatistic : cutStatistics) {
             tradingVolumesAndPriceChanges.add(new TradingVolumeAndPriceChange(stockStatistic.date,
                     stockStatistic.volume, Math.abs(stockStatistic.closePrice - stockStatistic.openPrice)));
@@ -153,40 +137,30 @@ public class StockItemAnalyzer {
         return tradingVolumesAndPriceChanges;
     }
 
-    private class OpeningPriceAndSMA5DifferenceComparator implements Comparator<OpeningPriceSMA5> {
+    private static class OpeningPriceAndSMA5DifferenceComparator implements Comparator<OpeningPriceSMA5> {
         @Override
         public int compare(OpeningPriceSMA5 o1, OpeningPriceSMA5 o2) {
-            if(o1.getOpeningPriceAndSMA5Difference() < o2.getOpeningPriceAndSMA5Difference()) {
+            return Double.compare(o2.getOpeningPriceAndSMA5Difference(), o1.getOpeningPriceAndSMA5Difference());
+        }
+    }
+
+    private static class VolumeAndPriceChangeCompator implements Comparator<TradingVolumeAndPriceChange> {
+        @Override
+        public int compare(TradingVolumeAndPriceChange o1, TradingVolumeAndPriceChange o2) {
+            if (o1.tradingVolume < o2.tradingVolume) {
                 return 1;
+            }
+            if (o1.tradingVolume == o2.tradingVolume) {
+                return Double.compare(o2.priceChange, o1.priceChange);
             }
             return -1;
         }
     }
 
-    private class VolumeAndPriceChangeCompator implements Comparator<TradingVolumeAndPriceChange> {
-        @Override
-        public int compare(TradingVolumeAndPriceChange o1, TradingVolumeAndPriceChange o2) {
-            if (o1.tradingVolume < o2.tradingVolume) {
-                return 1;
-            } else if (o1.tradingVolume == o2.tradingVolume) {
-                if (o1.priceChange < o2.priceChange) {
-                    return 1;
-                } else {
-                    return -1;
-                }
-            } else {
-                return -1;
-            }
-        }
-    }
-
-    private class CalendarComparator implements Comparator<StockStatistic> {
+    private static class CalendarComparator implements Comparator<StockStatistic> {
         @Override
         public int compare(StockStatistic o1, StockStatistic o2) {
-            if (o1.date.getTimeInMillis() < o2.date.getTimeInMillis()) {
-                return -1;
-            }
-            return 1;
+            return Long.compare(o1.date.getTimeInMillis(), o2.date.getTimeInMillis());
         }
     }
 }
