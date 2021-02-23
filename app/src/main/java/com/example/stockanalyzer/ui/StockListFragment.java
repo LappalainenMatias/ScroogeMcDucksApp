@@ -1,7 +1,6 @@
 package com.example.stockanalyzer.ui;
 
 import androidx.appcompat.widget.SearchView;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -15,20 +14,20 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.stockanalyzer.R;
+import com.example.stockanalyzer.stock.StockItem;
 import com.example.stockanalyzer.viewmodels.StockListViewModel;
 
 import java.util.ArrayList;
 
 public class StockListFragment extends Fragment {
 
-    private StockListViewModel mViewModel;
+    private StockListViewModel stockListViewModel;
 
     View viewContainer;
 
@@ -36,40 +35,11 @@ public class StockListFragment extends Fragment {
         return new StockListFragment();
     }
 
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         viewContainer = inflater.inflate(R.layout.stocklist_fragment, container, false);
-        ListView listView = viewContainer.findViewById(R.id.LVStocks);
-        ArrayList<String> items = new ArrayList<>();
-        items.add("1");
-        items.add("2");
-        items.add("1");
-        items.add("2");
-        items.add("1");
-        items.add("2");
-        items.add("1");
-        items.add("2");
-        items.add("1");
-        items.add("2");
-        items.add("1");
-        items.add("2");
-        items.add("1");
-        items.add("2");
-        items.add("1");
-        items.add("2");
-        items.add("1");
-        items.add("2");
-        items.add("1");
-        items.add("2");
-        items.add("1");
-        items.add("2");
-        items.add("1");
-        items.add("2");
-        ArrayAdapter<String> adapt = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, items);
-        listView.setAdapter(adapt);
 
         SearchView searchView = viewContainer.findViewById(R.id.action_search);
         TextView textView = searchView.findViewById(androidx.appcompat.R.id.search_src_text);
@@ -85,7 +55,16 @@ public class StockListFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(this).get(StockListViewModel.class);
+        stockListViewModel = ViewModelProviders.of(this).get(StockListViewModel.class);
+        ListView listView = viewContainer.findViewById(R.id.LVStocks);
+        stockListViewModel.getStockItems().observe(getViewLifecycleOwner(), stockItems -> {
+            ArrayList<String> stockNames = new ArrayList<>();
+            for(StockItem stockItem : stockItems){
+                stockNames.add(stockItem.name);
+            }
+            ArrayAdapter<String> adapt = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, stockNames);
+            listView.setAdapter(adapt);
+        });
     }
 
 }
