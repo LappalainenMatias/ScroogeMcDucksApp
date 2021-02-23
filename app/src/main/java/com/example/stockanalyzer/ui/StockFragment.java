@@ -24,17 +24,17 @@ import java.util.Locale;
 
 public class StockFragment extends Fragment {
 
-    private StockListViewModel mViewModel;
+    private StockListViewModel stockListViewModel;
+
     private TextInputEditText EDDateRangeStart;
     private TextInputEditText EDDateRangeEnd;
     private Calendar rangeStartCalendar;
     private Calendar rangeEndCalendar;
+    View containerView;
 
     public static StockFragment newInstance() {
         return new StockFragment();
     }
-
-    View containerView;
 
     @Nullable
     @Override
@@ -98,6 +98,7 @@ public class StockFragment extends Fragment {
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.ENGLISH);
         EDDateRangeStart.setText(sdf.format(rangeStartCalendar.getTime()));
     }
+
     private void updateRangeEndLabel() {
         String myFormat = "dd/MM/yyyy";
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.ENGLISH);
