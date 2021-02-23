@@ -32,6 +32,11 @@ public class StockListFragment extends Fragment {
 
     View viewContainer;
 
+    public static StockListFragment newInstance() {
+        return new StockListFragment();
+    }
+
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
