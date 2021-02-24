@@ -18,8 +18,6 @@ import java.util.Objects;
 
 public class StockViewModel extends ViewModel {
 
-    MutableLiveData<Calendar> rangeStart;
-    MutableLiveData<Calendar> rangeEnd;
     MutableLiveData<List<String>> categories;
     MutableLiveData<String> selectedCategory;
     MutableLiveData<StockItem> stockItem;
@@ -78,22 +76,6 @@ public class StockViewModel extends ViewModel {
         return stockItem;
     }
 
-    public MutableLiveData<Calendar> getRangeStart() {
-        if (rangeStart == null) {
-            rangeStart = new MutableLiveData<Calendar>();
-            loadRangeStart();
-        }
-        return rangeStart;
-    }
-
-    public MutableLiveData<Calendar> getRangeEnd() {
-        if (rangeEnd == null) {
-            rangeEnd = new MutableLiveData<Calendar>();
-            loadRangeEnd();
-        }
-        return rangeEnd;
-    }
-
     public MutableLiveData<String> getSelectedCategory() {
         if (selectedCategory == null) {
             selectedCategory = new MutableLiveData<String>();
@@ -110,14 +92,6 @@ public class StockViewModel extends ViewModel {
     }
 
     private void loadStockItem() {
-    }
-
-    private void loadRangeStart() {
-        rangeStart.setValue(Objects.requireNonNull(stockItem.getValue()).rangeStart);
-    }
-
-    private void loadRangeEnd() {
-        rangeStart.setValue(Objects.requireNonNull(stockItem.getValue()).rangeEnd);
     }
 
     private void loadCategory() {
