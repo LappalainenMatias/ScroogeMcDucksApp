@@ -20,6 +20,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.stockanalyzer.R;
+import com.example.stockanalyzer.arrayadapter.StockArrayAdapter;
 import com.example.stockanalyzer.stock.StockItem;
 import com.example.stockanalyzer.viewmodels.StockListViewModel;
 
@@ -30,6 +31,8 @@ public class StockListFragment extends Fragment {
     private StockListViewModel stockListViewModel;
 
     View viewContainer;
+    private ListView LVStocks;
+    private ArrayAdapter stockAdapter;
 
     public static StockListFragment newInstance() {
         return new StockListFragment();
@@ -40,15 +43,30 @@ public class StockListFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         viewContainer = inflater.inflate(R.layout.stocklist_fragment, container, false);
-
         SearchView searchView = viewContainer.findViewById(R.id.action_search);
         TextView textView = searchView.findViewById(androidx.appcompat.R.id.search_src_text);
+        ImageView searchIcon = searchView.findViewById(androidx.appcompat.R.id.search_button);
+        ImageView searchClose = searchView.findViewById(androidx.appcompat.R.id.search_close_btn);
+
+        searchIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(),R.drawable.ic_search_24px));
         textView.setTextColor(Color.WHITE);
         textView.setHintTextColor(Color.WHITE);
-        ImageView searchIcon = searchView.findViewById(androidx.appcompat.R.id.search_button);
-        searchIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(),R.drawable.ic_search_24px));
-        ImageView searchClose = searchView.findViewById(androidx.appcompat.R.id.search_close_btn);
         searchClose.setImageDrawable(ContextCompat.getDrawable(getActivity(),R.drawable.ic_clear_24px));
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if(stockAdapter.getFilter() != null){
+                    stockAdapter.getFilter().filter(newText);
+                }
+                return false;
+            }
+        });
         return viewContainer;
     }
 
@@ -56,14 +74,10 @@ public class StockListFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         stockListViewModel = ViewModelProviders.of(this).get(StockListViewModel.class);
-        ListView listView = viewContainer.findViewById(R.id.LVStocks);
+        LVStocks = viewContainer.findViewById(R.id.LVStocks);
         stockListViewModel.getStockItems().observe(getViewLifecycleOwner(), stockItems -> {
-            ArrayList<String> stockNames = new ArrayList<>();
-            for(StockItem stockItem : stockItems){
-                stockNames.add(stockItem.name);
-            }
-            ArrayAdapter<String> adapt = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, stockNames);
-            listView.setAdapter(adapt);
+            stockAdapter = new StockArrayAdapter(getContext(), getActivity(), stockItems);
+            LVStocks.setAdapter(stockAdapter);
         });
     }
 
