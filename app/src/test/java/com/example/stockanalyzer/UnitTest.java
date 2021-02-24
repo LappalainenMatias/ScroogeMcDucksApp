@@ -16,6 +16,8 @@ import java.util.GregorianCalendar;
 
 public class UnitTest {
 
+    final ExampleData exampleData = new ExampleData();
+
     @Test
     public void createStocksStatistics() {
         GregorianCalendar gregorianCalendar = new GregorianCalendar(2000, 0, 1);
@@ -37,24 +39,18 @@ public class UnitTest {
     public void createStockItem() {
         int id = 0;
         String name = "Apple";
-        GregorianCalendar rangeStart = new GregorianCalendar(2010, 0, 5);
-        GregorianCalendar rangeEnd = new GregorianCalendar(2010, 0, 7);
-
-        StockItem stockItem = new StockItem(id, name, rangeStart, rangeEnd);
+        StockItem stockItem = new StockItem(id, name);
 
         Assert.assertEquals(id, stockItem.id);
         Assert.assertEquals("Apple", stockItem.name);
-        Assert.assertEquals(rangeStart.getTimeInMillis(), stockItem.rangeStart.getTimeInMillis());
-        Assert.assertEquals(rangeEnd.getTimeInMillis(), stockItem.rangeEnd.getTimeInMillis());
     }
 
     @Test
     public void getLongestUpwardTrend_exampleStockItem1() {
-        ExampleData exampleData = new ExampleData();
         StockItem stockItem = exampleData.exampleStockItem1();
-
         StockItemAnalyzer stockItemAnalyzer = new StockItemAnalyzer(stockItem);
-        LongestUpwardTrend output = stockItemAnalyzer.getLongestUpwardTrend(stockItem.rangeStart, stockItem.rangeEnd);
+        LongestUpwardTrend output = stockItemAnalyzer.getLongestUpwardTrend(
+                new GregorianCalendar(2000, 0, 1), new GregorianCalendar(2030, 0, 1));
 
         Assert.assertEquals(4, output.size);
         Assert.assertEquals((new GregorianCalendar(2010, 0, 2).getTimeInMillis()), output.start.getTimeInMillis());
@@ -63,10 +59,10 @@ public class UnitTest {
 
     @Test
     public void getLongestUpwardTrend_exampleStockItem2() {
-        ExampleData exampleData = new ExampleData();
         StockItem stockItem = exampleData.exampleStockItem2();
         StockItemAnalyzer stockItemAnalyzer = new StockItemAnalyzer(stockItem);
-        LongestUpwardTrend output = stockItemAnalyzer.getLongestUpwardTrend(stockItem.rangeStart, stockItem.rangeEnd);
+        LongestUpwardTrend output = stockItemAnalyzer.getLongestUpwardTrend(
+                new GregorianCalendar(2000, 0, 1), new GregorianCalendar(2030, 0, 1));
 
         Assert.assertEquals((new GregorianCalendar(2021, 1, 17).getTimeInMillis()), output.start.getTimeInMillis());
         Assert.assertEquals((new GregorianCalendar(2021, 1, 23).getTimeInMillis()), output.end.getTimeInMillis());
@@ -81,7 +77,7 @@ public class UnitTest {
         StockItemAnalyzer stockItemAnalyzer = new StockItemAnalyzer(stockItem);
         LongestUpwardTrend output = stockItemAnalyzer.getLongestUpwardTrend(
                 new GregorianCalendar(1997, 0, 0),
-                new GregorianCalendar(1998, 0,0));
+                new GregorianCalendar(1998, 0, 0));
 
         Assert.assertNull(output.start);
         Assert.assertNull(output.end);
@@ -95,7 +91,7 @@ public class UnitTest {
         StockItemAnalyzer stockItemAnalyzer = new StockItemAnalyzer(stockItem);
         LongestUpwardTrend output = stockItemAnalyzer.getLongestUpwardTrend(
                 new GregorianCalendar(1997, 0, 0),
-                new GregorianCalendar(1998, 0,0));
+                new GregorianCalendar(1998, 0, 0));
 
         Assert.assertNull(output.start);
         Assert.assertNull(output.end);
@@ -119,8 +115,8 @@ public class UnitTest {
         StockItem stockItem = exampleData.exampleStockItem1();
         StockItemAnalyzer stockItemAnalyzer = new StockItemAnalyzer(stockItem);
 
-        ArrayList<TradingVolumeAndPriceChange> tradingVolumeAndPriceChanges =
-                stockItemAnalyzer.getHighestTradingVolumesAndLargestPriceChanges(stockItem.rangeStart, stockItem.rangeEnd);
+        ArrayList<TradingVolumeAndPriceChange> tradingVolumeAndPriceChanges = stockItemAnalyzer.getHighestTradingVolumesAndLargestPriceChanges(
+                new GregorianCalendar(2000, 0, 1), new GregorianCalendar(2030, 0, 1));
 
         TradingVolumeAndPriceChange first = tradingVolumeAndPriceChanges.get(0);
         TradingVolumeAndPriceChange second = tradingVolumeAndPriceChanges.get(1);
@@ -145,8 +141,8 @@ public class UnitTest {
         StockItem stockItem = exampleData.exampleStockItem2();
         StockItemAnalyzer stockItemAnalyzer = new StockItemAnalyzer(stockItem);
 
-        ArrayList<TradingVolumeAndPriceChange> tradingVolumeAndPriceChanges =
-                stockItemAnalyzer.getHighestTradingVolumesAndLargestPriceChanges(stockItem.rangeStart, stockItem.rangeEnd);
+        ArrayList<TradingVolumeAndPriceChange> tradingVolumeAndPriceChanges = stockItemAnalyzer.getHighestTradingVolumesAndLargestPriceChanges(
+                        new GregorianCalendar(2000, 0, 1), new GregorianCalendar(2030, 0, 1));
 
         TradingVolumeAndPriceChange first = tradingVolumeAndPriceChanges.get(0);
         TradingVolumeAndPriceChange second = tradingVolumeAndPriceChanges.get(1);
@@ -185,7 +181,8 @@ public class UnitTest {
         StockItem stockItem = exampleData.exampleStockItem1();
         StockItemAnalyzer stockItemAnalyzer = new StockItemAnalyzer(stockItem);
 
-        ArrayList<OpeningPriceSMA5> openingPriceSMA5s = stockItemAnalyzer.getOpeningPricesComparedToSMA5(stockItem.rangeStart, stockItem.rangeEnd);
+        ArrayList<OpeningPriceSMA5> openingPriceSMA5s = stockItemAnalyzer.getOpeningPricesComparedToSMA5(
+                new GregorianCalendar(2000, 0, 1), new GregorianCalendar(2030, 0, 1));
         OpeningPriceSMA5 first = openingPriceSMA5s.get(0);
         OpeningPriceSMA5 second = openingPriceSMA5s.get(1);
 
@@ -206,7 +203,8 @@ public class UnitTest {
         StockItem stockItem = exampleData.exampleStockItem2();
         StockItemAnalyzer stockItemAnalyzer = new StockItemAnalyzer(stockItem);
 
-        ArrayList<OpeningPriceSMA5> openingPriceSMA5s = stockItemAnalyzer.getOpeningPricesComparedToSMA5(stockItem.rangeStart, stockItem.rangeEnd);
+        ArrayList<OpeningPriceSMA5> openingPriceSMA5s = stockItemAnalyzer.getOpeningPricesComparedToSMA5(
+                new GregorianCalendar(2000, 0, 1), new GregorianCalendar(2030, 0, 1));
         OpeningPriceSMA5 first = openingPriceSMA5s.get(0);
         OpeningPriceSMA5 second = openingPriceSMA5s.get(1);
 
