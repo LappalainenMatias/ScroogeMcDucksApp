@@ -3,20 +3,22 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="8dp"
+    android:padding="12dp"
     android:orientation="vertical">
 
     <TextView
+        android:id="@+id/TVStockName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="14sp"
+        android:textSize="16sp"
         android:text="@string/stocks_name"
         android:textColor="@color/colorLightBlack"/>
 
     <TextView
+        android:id="@+id/TVStockDateRange"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="12sp"
+        android:textSize="14sp"
         android:text="@string/day_month_year_day_month_year"/>
 
 </LinearLayout>
