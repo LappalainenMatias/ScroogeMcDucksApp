@@ -12,24 +12,17 @@ import java.util.Map;
 public class StockItem {
     public int id;
     public String name;
-    public GregorianCalendar rangeStart;
-    public GregorianCalendar rangeEnd;
     public HashMap<GregorianCalendar, StockStatistic> stockStatisticByCalendar;
 
-    public StockItem(int id, String name, GregorianCalendar rangeStart, GregorianCalendar rangeEnd,
-                     HashMap<GregorianCalendar, StockStatistic> stockStatistics) {
+    public StockItem(int id, String name, HashMap<GregorianCalendar, StockStatistic> stockStatistics) {
         this.id = id;
         this.name = name;
-        this.rangeStart = rangeStart;
-        this.rangeEnd = rangeEnd;
         this.stockStatisticByCalendar = stockStatistics;
     }
 
-    public StockItem(int id, String name, GregorianCalendar rangeStart, GregorianCalendar rangeEnd) {
+    public StockItem(int id, String name) {
         this.id = id;
         this.name = name;
-        this.rangeStart = rangeStart;
-        this.rangeEnd = rangeEnd;
         this.stockStatisticByCalendar = new HashMap<>();
     }
 }
