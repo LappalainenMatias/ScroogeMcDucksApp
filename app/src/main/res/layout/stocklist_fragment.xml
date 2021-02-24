@@ -29,8 +29,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:menu="@menu/menu_stocklist"
         app:title="Stocks"
-        app:titleTextColor="@color/colorWhite" >
-    </androidx.appcompat.widget.Toolbar>
+        app:titleTextColor="@color/colorWhite"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingActionButton"
@@ -39,11 +38,13 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:clickable="true"
-        android:focusable="true"
         android:elevation="6dp"
+        android:focusable="true"
         android:src="@drawable/ic_outline_add_24"
+        app:tint="@color/colorWhite"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        style="@style/AppTheme" />
 
     <ListView
         android:id="@+id/LVStocks"
