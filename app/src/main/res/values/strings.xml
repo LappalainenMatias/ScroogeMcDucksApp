@@ -11,4 +11,7 @@
     <string name="end_date">End date</string>
     <string name="start_date">Start date</string>
     <string name="category">Category</string>
+    <string name="stock_data_from">"Stock data from "</string>
+    <string name="stock_data_was_not_found">Stock data was not found</string>
+    <string name="_to_">" to "</string>
 </resources>
