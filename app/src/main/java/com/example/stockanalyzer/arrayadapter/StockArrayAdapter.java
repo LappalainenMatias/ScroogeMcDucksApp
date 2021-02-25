@@ -2,7 +2,6 @@ package com.example.stockanalyzer.arrayadapter;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -11,8 +10,11 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
 
+import androidx.core.util.Pair;
+
 import com.example.stockanalyzer.R;
 import com.example.stockanalyzer.stock.StockItem;
+import com.example.stockanalyzer.stock.StockItemAnalyzer;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -22,7 +24,7 @@ import java.util.List;
 
 public class StockArrayAdapter extends ArrayAdapter<StockItem> implements Filterable {
 
-    private List<StockItem> stockItems;
+    public List<StockItem> stockItems;
     private List<StockItem> stockItemsCopy;
     private Activity activity;
 
@@ -42,9 +44,9 @@ public class StockArrayAdapter extends ArrayAdapter<StockItem> implements Filter
 
         TVStockName.setText(stockItem.name);
         if(stockItem.stockStatisticByCalendar.keySet().size() != 0){
-            TVStockDateRange.setText("Stock data from " + getStocksDateRange(position));
+            TVStockDateRange.setText(getContext().getResources().getString(R.string.stock_data_from) + getStocksDateRange(position));
         } else {
-            TVStockDateRange.setText("Stock data was not found");
+            TVStockDateRange.setText(getContext().getResources().getString(R.string.stock_data_was_not_found));
         }
         return rowView;
     }
@@ -86,20 +88,11 @@ public class StockArrayAdapter extends ArrayAdapter<StockItem> implements Filter
     }
 
     private String getStocksDateRange(int position) {
-        StockItem stockItem = stockItems.get(position);
-        GregorianCalendar earliest = null;
-        GregorianCalendar latest = null;
-        for(GregorianCalendar gregorianCalendar : stockItem.stockStatisticByCalendar.keySet()){
-            if(earliest == null || earliest.getTimeInMillis() > gregorianCalendar.getTimeInMillis()){
-                earliest = gregorianCalendar;
-            }
-            if(latest == null || latest.getTimeInMillis() < gregorianCalendar.getTimeInMillis()){
-                latest = gregorianCalendar;
-            }
-        }
+        StockItemAnalyzer stockItemAnalyzer = new StockItemAnalyzer(stockItems.get(position));
+        Pair<GregorianCalendar, GregorianCalendar> dateRange = stockItemAnalyzer.getStocksDateRange();
         SimpleDateFormat format_dd_MM_yyyy = new SimpleDateFormat("dd-MM-yyyy");
-        String formatedEarlier = format_dd_MM_yyyy.format(earliest.getTime());
-        String formatedLatest = format_dd_MM_yyyy.format(latest.getTime());
-        return formatedEarlier + " to " + formatedLatest;
+        String formattedEarlier = format_dd_MM_yyyy.format(dateRange.first.getTime());
+        String formattedLatest = format_dd_MM_yyyy.format(dateRange.second.getTime());
+        return formattedEarlier + getContext().getResources().getString(R.string._to_) + formattedLatest;
     }
 }
