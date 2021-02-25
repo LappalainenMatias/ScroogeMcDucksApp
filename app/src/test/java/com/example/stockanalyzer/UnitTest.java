@@ -1,5 +1,7 @@
 package com.example.stockanalyzer;
 
+import androidx.core.util.Pair;
+
 import com.example.stockanalyzer.exampledata.ExampleData;
 import com.example.stockanalyzer.stock.LongestUpwardTrend;
 import com.example.stockanalyzer.stock.OpeningPriceSMA5;
@@ -27,6 +29,7 @@ public class UnitTest {
         double high = 105.1;
         double low = 99.0;
         StockStatistic stockStatistic = new StockStatistic(gregorianCalendar, closePrize, volume, open, high, low);
+
         Assert.assertEquals(stockStatistic.date, gregorianCalendar);
         Assert.assertEquals(stockStatistic.closePrice, closePrize, 0);
         Assert.assertEquals(stockStatistic.volume, volume, 0);
@@ -68,10 +71,23 @@ public class UnitTest {
         Assert.assertEquals((new GregorianCalendar(2021, 1, 23).getTimeInMillis()), output.end.getTimeInMillis());
         Assert.assertEquals(3, output.size);
     }
+    @Test
+    public void getLongestUpwardTrend_RangeStartAndEndSameDay() {
+        StockItem stockItem = exampleData.exampleStockItem1();
+
+        StockItemAnalyzer stockItemAnalyzer = new StockItemAnalyzer(stockItem);
+        LongestUpwardTrend output = stockItemAnalyzer.getLongestUpwardTrend(
+                new GregorianCalendar(2010, 0, 1),
+                new GregorianCalendar(2010, 0, 1));
+
+        Assert.assertNull(output.start);
+        Assert.assertNull(output.end);
+        Assert.assertEquals(0, output.size);
+    }
+
 
     @Test
     public void getLongestUpwardTrend_rangeEndBeforeRangeStart() {
-        ExampleData exampleData = new ExampleData();
         StockItem stockItem = exampleData.exampleStockItem2();
 
         StockItemAnalyzer stockItemAnalyzer = new StockItemAnalyzer(stockItem);
@@ -86,7 +102,6 @@ public class UnitTest {
 
     @Test
     public void getLongestUpwardTrend_statisticsNotInRange() {
-        ExampleData exampleData = new ExampleData();
         StockItem stockItem = exampleData.exampleStockItem2();
         StockItemAnalyzer stockItemAnalyzer = new StockItemAnalyzer(stockItem);
         LongestUpwardTrend output = stockItemAnalyzer.getLongestUpwardTrend(
@@ -111,7 +126,6 @@ public class UnitTest {
 
     @Test
     public void getHighestTradingVolumeAndMostSignificantStockPriceChange_exampleStockItem1() {
-        ExampleData exampleData = new ExampleData();
         StockItem stockItem = exampleData.exampleStockItem1();
         StockItemAnalyzer stockItemAnalyzer = new StockItemAnalyzer(stockItem);
 
@@ -137,7 +151,6 @@ public class UnitTest {
 
     @Test
     public void getHighestTradingVolumeAndMostSignificantStockPriceChange_exampleStockItem2() {
-        ExampleData exampleData = new ExampleData();
         StockItem stockItem = exampleData.exampleStockItem2();
         StockItemAnalyzer stockItemAnalyzer = new StockItemAnalyzer(stockItem);
 
@@ -165,7 +178,6 @@ public class UnitTest {
     public void getHighestTradingVolumeAndMostSignificantStockPriceChange_dataOutOfRange() {
         GregorianCalendar rangeStart = new GregorianCalendar(1999, 6, 1);
         GregorianCalendar rangeEnd = new GregorianCalendar(1999, 9, 2);
-        ExampleData exampleData = new ExampleData();
         StockItem stockItem = exampleData.exampleStockItem1();
         StockItemAnalyzer stockItemAnalyzer = new StockItemAnalyzer(stockItem);
 
@@ -177,7 +189,6 @@ public class UnitTest {
 
     @Test
     public void getOpeningPricesComparedToSMA5_exampleStockItem1() {
-        ExampleData exampleData = new ExampleData();
         StockItem stockItem = exampleData.exampleStockItem1();
         StockItemAnalyzer stockItemAnalyzer = new StockItemAnalyzer(stockItem);
 
@@ -199,7 +210,6 @@ public class UnitTest {
 
     @Test
     public void getOpeningPricesComparedToSMA5_exampleStockItem2() {
-        ExampleData exampleData = new ExampleData();
         StockItem stockItem = exampleData.exampleStockItem2();
         StockItemAnalyzer stockItemAnalyzer = new StockItemAnalyzer(stockItem);
 
@@ -220,7 +230,7 @@ public class UnitTest {
     }
 
     @Test
-    public void ClosingPriceSMA5() {
+    public void closingPriceSMA5() {
         OpeningPriceSMA5 openingPriceSMA5 = new OpeningPriceSMA5(
                 new GregorianCalendar(2000, 0, 1),
                 10.2,
@@ -230,5 +240,25 @@ public class UnitTest {
                 openingPriceSMA5.gregorianCalendar.getTimeInMillis());
         Assert.assertEquals(10.2, openingPriceSMA5.SMA5, 0.001);
         Assert.assertEquals(1.0099, openingPriceSMA5.getOpeningPriceAndSMA5Difference(), 0.00001);
+    }
+
+    @Test
+    public void getStocksDateRange_exampleStockItem1(){
+        StockItem stockItem = exampleData.exampleStockItem1();
+        StockItemAnalyzer stockItemAnalyzer = new StockItemAnalyzer(stockItem);
+        Pair<GregorianCalendar, GregorianCalendar> dateRange = stockItemAnalyzer.getStocksDateRange();
+
+        Assert.assertEquals((new GregorianCalendar(2010, 0, 1)).getTimeInMillis(), dateRange.first.getTimeInMillis());
+        Assert.assertEquals((new GregorianCalendar(2010, 0, 7)).getTimeInMillis(), dateRange.second.getTimeInMillis());
+    }
+
+    @Test
+    public void getStocksDateRange_exampleStockItem2(){
+        StockItem stockItem = exampleData.exampleStockItem2();
+        StockItemAnalyzer stockItemAnalyzer = new StockItemAnalyzer(stockItem);
+        Pair<GregorianCalendar, GregorianCalendar> dateRange = stockItemAnalyzer.getStocksDateRange();
+
+        Assert.assertEquals((new GregorianCalendar(2021, 1, 13)).getTimeInMillis(), dateRange.first.getTimeInMillis());
+        Assert.assertEquals((new GregorianCalendar(2021, 1, 23)).getTimeInMillis(), dateRange.second.getTimeInMillis());
     }
 }
