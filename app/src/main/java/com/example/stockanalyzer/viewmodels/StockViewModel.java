@@ -1,23 +1,29 @@
 package com.example.stockanalyzer.viewmodels;
 
-import androidx.core.util.Pair;
+import android.util.Pair;
+
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.stockanalyzer.R;
+import com.example.stockanalyzer.repository.Repository;
 import com.example.stockanalyzer.stock.LongestUpwardTrend;
 import com.example.stockanalyzer.stock.OpeningPriceSMA5;
 import com.example.stockanalyzer.stock.StockItem;
 import com.example.stockanalyzer.stock.StockItemAnalyzer;
 import com.example.stockanalyzer.stock.TradingVolumeAndPriceChange;
 
-import java.util.ArrayList;
-import java.util.Calendar;
+import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Objects;
+import java.util.Locale;
 
 public class StockViewModel extends ViewModel {
 
+    int stockId;
+
+    MutableLiveData<Pair<GregorianCalendar, GregorianCalendar>> dateRange;
+    MutableLiveData<String> stockName;
     MutableLiveData<List<String>> categories;
     MutableLiveData<String> selectedCategory;
     MutableLiveData<StockItem> stockItem;
@@ -26,6 +32,29 @@ public class StockViewModel extends ViewModel {
     MutableLiveData<List<TradingVolumeAndPriceChange>> tradingVolumesAndPriceChanges;
     MutableLiveData<List<OpeningPriceSMA5>> openingPriceSMA5s;
     StockItemAnalyzer stockItemAnalyzer;
+    Repository repository;
+
+    public StockViewModel(int stockId) {
+        this.stockId = stockId;
+        repository = new Repository();
+        loadStockItem();
+        loadStockItemAnalyzer();
+    }
+
+    public MutableLiveData<Pair<GregorianCalendar, GregorianCalendar>> getDateRange() {
+        if (dateRange == null) {
+            dateRange = new MutableLiveData<>();
+            loadDateRange();
+        }
+        return dateRange;
+    }
+
+    public MutableLiveData<String> getStockName() {
+        if (stockName == null) {
+            stockName = new MutableLiveData<>(stockItem.getValue().name);
+        }
+        return stockName;
+    }
 
     public MutableLiveData<List<OpeningPriceSMA5>> getOpeningPriceSMA5s() {
         if (openingPriceSMA5s == null) {
@@ -51,27 +80,27 @@ public class StockViewModel extends ViewModel {
     public MutableLiveData<String> getAnswer() {
         if (answer == null) {
             answer = new MutableLiveData<String>();
+            answer.setValue("");
         }
         return answer;
     }
 
-    public MutableLiveData<StockItem> getCategories() {
+    public MutableLiveData<List<String>> getCategories() {
         if (categories == null) {
             categories = new MutableLiveData<List<String>>();
             loadCategories();
         }
-        return stockItem;
+        return categories;
     }
 
     private void loadCategories() {
-        // TODO: 23/02/2021
+
     }
 
     public MutableLiveData<StockItem> getStockItem() {
         if (stockItem == null) {
-            stockItem = new MutableLiveData<StockItem>();
+            stockItem = new MutableLiveData<>();
             loadStockItem();
-            loadStockItemAnalyzer();
         }
         return stockItem;
     }
@@ -79,7 +108,7 @@ public class StockViewModel extends ViewModel {
     public MutableLiveData<String> getSelectedCategory() {
         if (selectedCategory == null) {
             selectedCategory = new MutableLiveData<String>();
-            loadCategory();
+            loadSelectedCategory();
         }
         return selectedCategory;
     }
@@ -87,17 +116,76 @@ public class StockViewModel extends ViewModel {
     /**
      * @return true if user has inputted all the necessary data to return results.
      */
-    public boolean analyze(){
+    public boolean analyze() {
+        switch (selectedCategory.getValue()) {
+            // TODO: 25/02/2021 Use R.string instead of fixed value.
+            case "Longest upward trend":
+                analyze_longestUpwardTrend();
+                break;
+            case "Highest trading volume and the most significant stock price change":
+                analyze_highestTradingVolumeAnsMostSignificantStockChange();
+                break;
+            case "Best opening price compared to 5 day moving average":
+                analyze_openingPriceComparedToSMA5();
+                break;
+        }
         return false;
     }
 
     private void loadStockItem() {
+        stockItem = new MutableLiveData<>(repository.getStock(stockId));
     }
 
-    private void loadCategory() {
+    private void loadSelectedCategory() {
+        selectedCategory = new MutableLiveData<>("Longest upward trend");
     }
 
     private void loadStockItemAnalyzer() {
         stockItemAnalyzer = new StockItemAnalyzer(stockItem.getValue());
+    }
+
+    private void loadDateRange() {
+        GregorianCalendar earliest = null;
+        GregorianCalendar latest = null;
+        for (GregorianCalendar gregorianCalendar : stockItem.getValue().stockStatisticByCalendar.keySet()) {
+            if (earliest == null || earliest.getTimeInMillis() > gregorianCalendar.getTimeInMillis()) {
+                earliest = gregorianCalendar;
+            }
+            if (latest == null || latest.getTimeInMillis() < gregorianCalendar.getTimeInMillis()) {
+                latest = gregorianCalendar;
+            }
+        }
+        dateRange.setValue(new Pair<>(earliest, latest));
+    }
+
+    // TODO: 25/02/2021 Create this so that it supports multiple languages
+    private void analyze_longestUpwardTrend() {
+        LongestUpwardTrend longestUpwardTrend = stockItemAnalyzer
+                .getLongestUpwardTrend(dateRange.getValue().first, dateRange.getValue().second);
+        int length = longestUpwardTrend.size;
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
+
+        if (length < 2) {
+            androidx.core.util.Pair<GregorianCalendar, GregorianCalendar> dateRange = stockItemAnalyzer.getStocksDateRange();
+            answer.setValue("Date range did not contain upward trend. " + stockName.getValue()
+                    + " stock data starts <b>" + sdf.format(dateRange.first.getTime())
+                    + "</b> and ends <b>" + sdf.format(dateRange.second.getTime()) + "</b>.");
+        } else {
+            GregorianCalendar start = longestUpwardTrend.start;
+            GregorianCalendar end = longestUpwardTrend.end;
+            answer.setValue("In " + stockName.getValue() + " stock historical data the Close/Last price increased <b>"
+                    + length + "</b> days in a row between <b>" + sdf.format(start.getTime())
+                    + "</b> and <b>" + sdf.format(end.getTime()) + "</b>.");
+        }
+    }
+
+    private void analyze_highestTradingVolumeAnsMostSignificantStockChange() {
+        LongestUpwardTrend longestUpwardTrend = stockItemAnalyzer.getLongestUpwardTrend(dateRange.getValue().first, dateRange.getValue().second);
+        answer.setValue("");
+    }
+
+    private void analyze_openingPriceComparedToSMA5() {
+        LongestUpwardTrend longestUpwardTrend = stockItemAnalyzer.getLongestUpwardTrend(dateRange.getValue().first, dateRange.getValue().second);
+        answer.setValue("");
     }
 }
