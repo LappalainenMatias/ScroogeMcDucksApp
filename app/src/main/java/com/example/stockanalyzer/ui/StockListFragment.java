@@ -10,10 +10,15 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.NavDirections;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -32,11 +37,7 @@ public class StockListFragment extends Fragment {
 
     View viewContainer;
     private ListView LVStocks;
-    private ArrayAdapter stockAdapter;
-
-    public static StockListFragment newInstance() {
-        return new StockListFragment();
-    }
+    private StockArrayAdapter stockAdapter;
 
     @Nullable
     @Override
@@ -48,10 +49,10 @@ public class StockListFragment extends Fragment {
         ImageView searchIcon = searchView.findViewById(androidx.appcompat.R.id.search_button);
         ImageView searchClose = searchView.findViewById(androidx.appcompat.R.id.search_close_btn);
 
-        searchIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(),R.drawable.ic_search_24px));
+        searchIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_search_24px));
         textView.setTextColor(Color.WHITE);
         textView.setHintTextColor(Color.WHITE);
-        searchClose.setImageDrawable(ContextCompat.getDrawable(getActivity(),R.drawable.ic_clear_24px));
+        searchClose.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_clear_24px));
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -61,7 +62,7 @@ public class StockListFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if(stockAdapter.getFilter() != null){
+                if (stockAdapter.getFilter() != null) {
                     stockAdapter.getFilter().filter(newText);
                 }
                 return false;
@@ -70,14 +71,22 @@ public class StockListFragment extends Fragment {
         return viewContainer;
     }
 
+    // TODO: 25/02/2021 Replace deprecated code
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         stockListViewModel = ViewModelProviders.of(this).get(StockListViewModel.class);
         LVStocks = viewContainer.findViewById(R.id.LVStocks);
+
         stockListViewModel.getStockItems().observe(getViewLifecycleOwner(), stockItems -> {
             stockAdapter = new StockArrayAdapter(getContext(), getActivity(), stockItems);
             LVStocks.setAdapter(stockAdapter);
+        });
+
+        LVStocks.setOnItemClickListener((parent, view, position, id) -> {
+            Bundle bundle = new Bundle();
+            bundle.putInt("stockId", stockAdapter.stockItems.get(position).id);
+            Navigation.findNavController(view).navigate(R.id.action_stockListFragment_to_stockFragment, bundle);
         });
     }
 
