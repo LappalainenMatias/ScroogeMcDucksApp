@@ -53,10 +53,9 @@ public class StockFragment extends Fragment {
         EDDateRangeEnd = containerView.findViewById(R.id.EDDateRangeEnd);
         TVAnswer = containerView.findViewById(R.id.TVAnswer);
         toolbar = containerView.findViewById(R.id.StockToolbar);
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, getCategories());
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, stockViewModel.getCategories().getValue());
         ((MaterialAutoCompleteTextView) textInputLayout.getEditText()).setAdapter(adapter);
-        ((MaterialAutoCompleteTextView) textInputLayout.getEditText()).setText(adapter.getItem(1), false);
+        ((MaterialAutoCompleteTextView) textInputLayout.getEditText()).setText(adapter.getItem(0), false);
 
         createObservers();
         createViewListeners();
@@ -64,6 +63,12 @@ public class StockFragment extends Fragment {
     }
 
     private void createObservers() {
+        stockViewModel.getCategories().observe(getViewLifecycleOwner(), categories -> {
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, categories);
+            ((MaterialAutoCompleteTextView) textInputLayout.getEditText()).setAdapter(adapter);
+            ((MaterialAutoCompleteTextView) textInputLayout.getEditText()).setText(adapter.getItem(0), false);
+        });
+
         stockViewModel.getStockName().observe(getViewLifecycleOwner(), stockName -> {
             toolbar.setTitle(stockName);
         });
@@ -119,20 +124,8 @@ public class StockFragment extends Fragment {
             Navigation.findNavController(v).navigate(R.id.action_stockFragment_to_stockListFragment);
         });
 
-        ((MaterialAutoCompleteTextView) textInputLayout.getEditText()).setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                
-            }
-        });
+        ((MaterialAutoCompleteTextView) textInputLayout.getEditText()).setOnItemClickListener(
+                (parent, view, position, id) ->
+                stockViewModel.getSelectedCategory().setValue(stockViewModel.getCategories().getValue().get(position)));
     }
-
-    public String[] getCategories() {
-        String[] categories = new String[3];
-        categories[0] = getResources().getString(R.string.categories_1);
-        categories[1] = getResources().getString(R.string.categories_2);
-        categories[2] = getResources().getString(R.string.categories_3);
-        return categories;
-    }
-
 }
