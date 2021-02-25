@@ -3,6 +3,9 @@ package com.example.stockanalyzer.stock;
 
 import androidx.core.util.Pair;
 
+import com.example.stockanalyzer.R;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -20,7 +23,7 @@ public class StockItemAnalyzer {
     }
 
     /**
-     * @return If statistics are out of the range then return new LongestUpwardTrend(0, null, null)
+     * @return If date range does not contain upward trend return LongestUpwardTrend(0, null, null)
      */
     public LongestUpwardTrend getLongestUpwardTrend(
             GregorianCalendar rangeStart, GregorianCalendar rangeEnd) {
@@ -28,7 +31,7 @@ public class StockItemAnalyzer {
         List<StockStatistic> cutStatistics = cut(statistics, rangeStart, rangeEnd);
         Collections.sort(cutStatistics, new CalendarComparator());
 
-        if (cutStatistics.size() == 0) {
+        if (cutStatistics.size() < 2) {
             return new LongestUpwardTrend(0, null, null);
         }
 
@@ -54,6 +57,10 @@ public class StockItemAnalyzer {
         if (longestUpwardTrendEndIndex - longestUpwardTrendStartIndex < currentUpwardTrendEnd - currentUpwardTrendStart) {
             longestUpwardTrendStartIndex = currentUpwardTrendStart;
             longestUpwardTrendEndIndex = currentUpwardTrendEnd;
+        }
+
+        if(longestUpwardTrendEndIndex - longestUpwardTrendStartIndex < 1){
+            return new LongestUpwardTrend(0, null, null);
         }
 
         int size = longestUpwardTrendEndIndex - longestUpwardTrendStartIndex + 1;
@@ -92,6 +99,20 @@ public class StockItemAnalyzer {
         return openingPriceSMA5s;
     }
 
+    public Pair<GregorianCalendar, GregorianCalendar> getStocksDateRange() {
+        GregorianCalendar earliest = null;
+        GregorianCalendar latest = null;
+        for(GregorianCalendar gregorianCalendar : stockStatisticByCalendar.keySet()){
+            if(earliest == null || earliest.getTimeInMillis() > gregorianCalendar.getTimeInMillis()){
+                earliest = gregorianCalendar;
+            }
+            if(latest == null || latest.getTimeInMillis() < gregorianCalendar.getTimeInMillis()){
+                latest = gregorianCalendar;
+            }
+        }
+        return new Pair<>(earliest, latest);
+    }
+
     private ArrayList<OpeningPriceSMA5> getOpeningPriceSMA5s(List<StockStatistic> statistics) {
         ArrayList<OpeningPriceSMA5> openingPriceSMA5s = new ArrayList<>();
         if (statistics.size() < 6)
@@ -106,6 +127,10 @@ public class StockItemAnalyzer {
         return openingPriceSMA5s;
     }
 
+    /**
+     * If stockstatistic date is not rangeStart or rangeEnd or between rangeStart and rangeEnd then stockStatistic is cut
+     * off from list.
+     */
     private List<StockStatistic> cut(List<StockStatistic> stockStatistics, GregorianCalendar rangeStart,
                                      GregorianCalendar rangeEnd) {
         List<StockStatistic> cutted = new ArrayList<>();
