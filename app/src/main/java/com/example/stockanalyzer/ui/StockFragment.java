@@ -2,109 +2,130 @@ package com.example.stockanalyzer.ui;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.text.Html;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.DatePicker;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import com.example.stockanalyzer.R;
-import com.example.stockanalyzer.viewmodels.StockListViewModel;
+import com.example.stockanalyzer.viewmodels.StockViewModel;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 
 public class StockFragment extends Fragment {
 
-    private StockListViewModel stockListViewModel;
+    private StockViewModel stockViewModel;
 
+    private DatePickerDialog.OnDateSetListener DatePickerRangeEnd;
+    private DatePickerDialog.OnDateSetListener DatePickerRangeStart;
     private TextInputEditText EDDateRangeStart;
     private TextInputEditText EDDateRangeEnd;
-    private Calendar rangeStartCalendar;
-    private Calendar rangeEndCalendar;
+    private TextInputLayout textInputLayout;
+    private TextView TVAnswer;
+    private Toolbar toolbar;
     View containerView;
-
-    public static StockFragment newInstance() {
-        return new StockFragment();
-    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        stockViewModel = new StockViewModel(getArguments().getInt("stockId", -1));
+
         containerView = inflater.inflate(R.layout.stock_fragment, container, false);
-        TextInputLayout textInputLayout = containerView.findViewById(R.id.textInputLayout);
+        textInputLayout = containerView.findViewById(R.id.textInputLayout);
+        EDDateRangeStart = containerView.findViewById(R.id.EDDateRangeStart);
+        EDDateRangeEnd = containerView.findViewById(R.id.EDDateRangeEnd);
+        TVAnswer = containerView.findViewById(R.id.TVAnswer);
+        toolbar = containerView.findViewById(R.id.StockToolbar);
+
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, getCategories());
         ((MaterialAutoCompleteTextView) textInputLayout.getEditText()).setAdapter(adapter);
         ((MaterialAutoCompleteTextView) textInputLayout.getEditText()).setText(adapter.getItem(1), false);
-        EDDateRangeStart = containerView.findViewById(R.id.EDDateRangeStart);
-        EDDateRangeEnd = containerView.findViewById(R.id.EDDateRangeEnd);
-        rangeStartCalendar = Calendar.getInstance();
-        rangeEndCalendar = Calendar.getInstance();
 
-        final DatePickerDialog.OnDateSetListener rangeStart = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear,
-                                  int dayOfMonth) {
-                rangeStartCalendar.set(Calendar.YEAR, year);
-                rangeStartCalendar.set(Calendar.MONTH, monthOfYear);
-                rangeStartCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                updateRangeStartLabel();
-            }
-        };
-
-        final DatePickerDialog.OnDateSetListener rangeEnd = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear,
-                                  int dayOfMonth) {
-                rangeEndCalendar.set(Calendar.YEAR, year);
-                rangeEndCalendar.set(Calendar.MONTH, monthOfYear);
-                rangeEndCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                updateRangeEndLabel();
-            }
-        };
-
-        EDDateRangeStart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new DatePickerDialog(getActivity(), rangeStart, rangeStartCalendar
-                        .get(Calendar.YEAR), rangeStartCalendar.get(Calendar.MONTH),
-                        rangeStartCalendar.get(Calendar.DAY_OF_MONTH)).show();
-            }
-        });
-
-        EDDateRangeEnd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new DatePickerDialog(getActivity(), rangeEnd, rangeEndCalendar
-                        .get(Calendar.YEAR), rangeEndCalendar.get(Calendar.MONTH),
-                        rangeEndCalendar.get(Calendar.DAY_OF_MONTH)).show();
-            }
-        });
-
+        createObservers();
+        createViewListeners();
         return containerView;
     }
 
-    private void updateRangeStartLabel() {
-        String myFormat = "dd/MM/yyyy";
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.ENGLISH);
-        EDDateRangeStart.setText(sdf.format(rangeStartCalendar.getTime()));
+    private void createObservers() {
+        stockViewModel.getStockName().observe(getViewLifecycleOwner(), stockName -> {
+            toolbar.setTitle(stockName);
+        });
+
+        stockViewModel.getDateRange().observe(getViewLifecycleOwner(), dateRange -> {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
+            EDDateRangeStart.setText(sdf.format(dateRange.first.getTime()));
+            EDDateRangeEnd.setText(sdf.format(dateRange.second.getTime()));
+            stockViewModel.analyze();
+        });
+
+        stockViewModel.getSelectedCategory().observe(getViewLifecycleOwner(), category -> {
+            stockViewModel.analyze();
+        });
+
+        stockViewModel.getAnswer().observe(getViewLifecycleOwner(), answer -> {
+            if(answer.length() == 0){
+                TVAnswer.setVisibility(View.GONE);
+            } else {
+                TVAnswer.setVisibility(View.VISIBLE);
+            }
+            TVAnswer.setText(Html.fromHtml(answer));
+        });
     }
 
-    private void updateRangeEndLabel() {
-        String myFormat = "dd/MM/yyyy";
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.ENGLISH);
-        EDDateRangeEnd.setText(sdf.format(rangeEndCalendar.getTime()));
-    }
 
+    private void createViewListeners() {
+        DatePickerRangeStart = (view, year, monthOfYear, dayOfMonth) -> {
+            GregorianCalendar rangeStart = new GregorianCalendar(year, monthOfYear, dayOfMonth);
+            GregorianCalendar rangeEnd = stockViewModel.getDateRange().getValue().second;
+            stockViewModel.getDateRange().setValue(new Pair<>(rangeStart, rangeEnd));
+        };
+
+        DatePickerRangeEnd = (view, year, monthOfYear, dayOfMonth) -> {
+            GregorianCalendar rangeStart = stockViewModel.getDateRange().getValue().first;
+            GregorianCalendar rangeEnd = new GregorianCalendar(year, monthOfYear, dayOfMonth);
+            stockViewModel.getDateRange().setValue(new Pair<>(rangeStart, rangeEnd));
+        };
+
+        EDDateRangeStart.setOnClickListener(v -> new DatePickerDialog(getActivity(),
+                DatePickerRangeStart,
+                stockViewModel.getDateRange().getValue().first.get(Calendar.YEAR),
+                stockViewModel.getDateRange().getValue().first.get(Calendar.MONTH),
+                stockViewModel.getDateRange().getValue().first.get(Calendar.DAY_OF_MONTH)).show());
+
+        EDDateRangeEnd.setOnClickListener(v -> new DatePickerDialog(getActivity(),
+                DatePickerRangeEnd,
+                stockViewModel.getDateRange().getValue().second.get(Calendar.YEAR),
+                stockViewModel.getDateRange().getValue().second.get(Calendar.MONTH),
+                stockViewModel.getDateRange().getValue().second.get(Calendar.DAY_OF_MONTH)).show());
+
+        toolbar.setNavigationOnClickListener(v -> {
+            Navigation.findNavController(v).navigate(R.id.action_stockFragment_to_stockListFragment);
+        });
+
+        ((MaterialAutoCompleteTextView) textInputLayout.getEditText()).setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                
+            }
+        });
+    }
 
     public String[] getCategories() {
         String[] categories = new String[3];
