@@ -14,6 +14,7 @@ import com.example.stockanalyzer.stock.StockItemAnalyzer;
 import com.example.stockanalyzer.stock.TradingVolumeAndPriceChange;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
@@ -37,8 +38,7 @@ public class StockViewModel extends ViewModel {
     public StockViewModel(int stockId) {
         this.stockId = stockId;
         repository = new Repository();
-        loadStockItem();
-        loadStockItemAnalyzer();
+        stockItemAnalyzer = new StockItemAnalyzer(getStockItem().getValue());
     }
 
     public MutableLiveData<Pair<GregorianCalendar, GregorianCalendar>> getDateRange() {
@@ -51,7 +51,7 @@ public class StockViewModel extends ViewModel {
 
     public MutableLiveData<String> getStockName() {
         if (stockName == null) {
-            stockName = new MutableLiveData<>(stockItem.getValue().name);
+            stockName = new MutableLiveData<>(getStockItem().getValue().name);
         }
         return stockName;
     }
@@ -94,7 +94,11 @@ public class StockViewModel extends ViewModel {
     }
 
     private void loadCategories() {
-
+        List<String> items = new ArrayList<>();
+        items.add("Longest upward trend");
+        items.add("Highest trading volume and the most significant stock price change");
+        items.add("Best opening price compared to 5 day moving average");
+        categories.setValue(items);
     }
 
     public MutableLiveData<StockItem> getStockItem() {
@@ -117,7 +121,7 @@ public class StockViewModel extends ViewModel {
      * @return true if user has inputted all the necessary data to return results.
      */
     public boolean analyze() {
-        switch (selectedCategory.getValue()) {
+        switch (getSelectedCategory().getValue()) {
             // TODO: 25/02/2021 Use R.string instead of fixed value.
             case "Longest upward trend":
                 analyze_longestUpwardTrend();
@@ -140,14 +144,10 @@ public class StockViewModel extends ViewModel {
         selectedCategory = new MutableLiveData<>("Longest upward trend");
     }
 
-    private void loadStockItemAnalyzer() {
-        stockItemAnalyzer = new StockItemAnalyzer(stockItem.getValue());
-    }
-
     private void loadDateRange() {
         GregorianCalendar earliest = null;
         GregorianCalendar latest = null;
-        for (GregorianCalendar gregorianCalendar : stockItem.getValue().stockStatisticByCalendar.keySet()) {
+        for (GregorianCalendar gregorianCalendar : getStockItem().getValue().stockStatisticByCalendar.keySet()) {
             if (earliest == null || earliest.getTimeInMillis() > gregorianCalendar.getTimeInMillis()) {
                 earliest = gregorianCalendar;
             }
@@ -160,32 +160,32 @@ public class StockViewModel extends ViewModel {
 
     // TODO: 25/02/2021 Create this so that it supports multiple languages
     private void analyze_longestUpwardTrend() {
-        LongestUpwardTrend longestUpwardTrend = stockItemAnalyzer
-                .getLongestUpwardTrend(dateRange.getValue().first, dateRange.getValue().second);
+        LongestUpwardTrend longestUpwardTrend =
+                stockItemAnalyzer.getLongestUpwardTrend(getDateRange().getValue().first, getDateRange().getValue().second);
         int length = longestUpwardTrend.size;
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
 
         if (length < 2) {
             androidx.core.util.Pair<GregorianCalendar, GregorianCalendar> dateRange = stockItemAnalyzer.getStocksDateRange();
-            answer.setValue("Date range did not contain upward trend. " + stockName.getValue()
+            getAnswer().setValue("Date range did not contain upward trend. " + getStockName().getValue()
                     + " stock data starts <b>" + sdf.format(dateRange.first.getTime())
                     + "</b> and ends <b>" + sdf.format(dateRange.second.getTime()) + "</b>.");
         } else {
             GregorianCalendar start = longestUpwardTrend.start;
             GregorianCalendar end = longestUpwardTrend.end;
-            answer.setValue("In " + stockName.getValue() + " stock historical data the Close/Last price increased <b>"
+            getAnswer().setValue("In " + getStockName().getValue() + " stock historical data the Close/Last price increased <b>"
                     + length + "</b> days in a row between <b>" + sdf.format(start.getTime())
                     + "</b> and <b>" + sdf.format(end.getTime()) + "</b>.");
         }
     }
 
     private void analyze_highestTradingVolumeAnsMostSignificantStockChange() {
-        LongestUpwardTrend longestUpwardTrend = stockItemAnalyzer.getLongestUpwardTrend(dateRange.getValue().first, dateRange.getValue().second);
-        answer.setValue("");
+        LongestUpwardTrend longestUpwardTrend = stockItemAnalyzer.getLongestUpwardTrend(getDateRange().getValue().first, getDateRange().getValue().second);
+        getAnswer().setValue("");
     }
 
     private void analyze_openingPriceComparedToSMA5() {
-        LongestUpwardTrend longestUpwardTrend = stockItemAnalyzer.getLongestUpwardTrend(dateRange.getValue().first, dateRange.getValue().second);
-        answer.setValue("");
+        LongestUpwardTrend longestUpwardTrend = stockItemAnalyzer.getLongestUpwardTrend(getDateRange().getValue().first, getDateRange().getValue().second);
+        getAnswer().setValue("");
     }
 }
