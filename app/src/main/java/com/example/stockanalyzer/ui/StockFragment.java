@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -18,6 +19,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
 import com.example.stockanalyzer.R;
+import com.example.stockanalyzer.arrayadapter.TradingVolumePriceChangeArrayAdapter;
 import com.example.stockanalyzer.viewmodels.StockViewModel;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputEditText;
@@ -39,6 +41,7 @@ public class StockFragment extends Fragment {
     private TextInputLayout textInputLayout;
     private TextView TVAnswer;
     private Toolbar toolbar;
+    private ListView LVAnswer;
     View containerView;
 
     @Nullable
@@ -52,6 +55,7 @@ public class StockFragment extends Fragment {
         EDDateRangeStart = containerView.findViewById(R.id.EDDateRangeStart);
         EDDateRangeEnd = containerView.findViewById(R.id.EDDateRangeEnd);
         TVAnswer = containerView.findViewById(R.id.TVAnswer);
+        LVAnswer = containerView.findViewById(R.id.LLAnswer);
         toolbar = containerView.findViewById(R.id.StockToolbar);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, stockViewModel.getCategories().getValue());
         ((MaterialAutoCompleteTextView) textInputLayout.getEditText()).setAdapter(adapter);
@@ -91,6 +95,12 @@ public class StockFragment extends Fragment {
                 TVAnswer.setVisibility(View.VISIBLE);
             }
             TVAnswer.setText(Html.fromHtml(answer));
+        });
+
+        stockViewModel.getTradingVolumesAndPriceChanges().observe(getViewLifecycleOwner(), tradingVolumeAndPriceChanges -> {
+            ArrayAdapter arrayAdapter = new TradingVolumePriceChangeArrayAdapter(
+                    getContext(), getActivity(), tradingVolumeAndPriceChanges);
+            LVAnswer.setAdapter(arrayAdapter);
         });
     }
 
