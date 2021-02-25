@@ -5,7 +5,6 @@ import android.util.Pair;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.stockanalyzer.R;
 import com.example.stockanalyzer.repository.Repository;
 import com.example.stockanalyzer.stock.LongestUpwardTrend;
 import com.example.stockanalyzer.stock.OpeningPriceSMA5;
@@ -63,7 +62,7 @@ public class StockViewModel extends ViewModel {
         return openingPriceSMA5s;
     }
 
-    public MutableLiveData<List<TradingVolumeAndPriceChange>> getSTradingVolumesAndPriceChanges() {
+    public MutableLiveData<List<TradingVolumeAndPriceChange>> getTradingVolumesAndPriceChanges() {
         if (tradingVolumesAndPriceChanges == null) {
             tradingVolumesAndPriceChanges = new MutableLiveData<List<TradingVolumeAndPriceChange>>();
         }
@@ -180,8 +179,11 @@ public class StockViewModel extends ViewModel {
     }
 
     private void analyze_highestTradingVolumeAnsMostSignificantStockChange() {
-        LongestUpwardTrend longestUpwardTrend = stockItemAnalyzer.getLongestUpwardTrend(getDateRange().getValue().first, getDateRange().getValue().second);
+        List<TradingVolumeAndPriceChange> tradingVolumeAndPriceChanges =
+                stockItemAnalyzer.getHighestTradingVolumesAndLargestPriceChanges(
+                getDateRange().getValue().first, getDateRange().getValue().second);
         getAnswer().setValue("");
+        getTradingVolumesAndPriceChanges().setValue(tradingVolumeAndPriceChanges);
     }
 
     private void analyze_openingPriceComparedToSMA5() {
