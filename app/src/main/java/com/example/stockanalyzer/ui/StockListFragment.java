@@ -1,10 +1,14 @@
 package com.example.stockanalyzer.ui;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -20,14 +24,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.stockanalyzer.R;
 import com.example.stockanalyzer.arrayadapter.StockArrayAdapter;
 import com.example.stockanalyzer.stock.StockItem;
 import com.example.stockanalyzer.viewmodels.StockListViewModel;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
@@ -48,11 +58,28 @@ public class StockListFragment extends Fragment {
         TextView textView = searchView.findViewById(androidx.appcompat.R.id.search_src_text);
         ImageView searchIcon = searchView.findViewById(androidx.appcompat.R.id.search_button);
         ImageView searchClose = searchView.findViewById(androidx.appcompat.R.id.search_close_btn);
+        FloatingActionButton FABAdd = viewContainer.findViewById(R.id.FABAdd);
 
         searchIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_search_24px));
         textView.setTextColor(Color.WHITE);
         textView.setHintTextColor(Color.WHITE);
         searchClose.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_clear_24px));
+
+        FABAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(getContext())
+                                .setTitle("Add stock data?")
+                                .setMessage("Application supports only csv files.")
+                                .setView(getMaterialButton())
+                                .setPositiveButton("ADD", (dialogInterface, i) -> {
+                                })
+                                .setNegativeButton("CANCEL", (dialogInterface, i) -> {
+                                });
+
+                AlertDialog alertDialog = materialAlertDialogBuilder.show();
+            }
+        });
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -69,6 +96,16 @@ public class StockListFragment extends Fragment {
             }
         });
         return viewContainer;
+    }
+
+    private LinearLayout getMaterialButton() {
+        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LinearLayout linearLayout =  (LinearLayout) inflater.inflate(R.layout.choose_file_btn, null, true);
+        MaterialButton materialButton = linearLayout.findViewById(R.id.BTNChooseFile);
+        materialButton.setOnClickListener(v -> {
+            Toast.makeText(getContext(), "Clicked", Toast.LENGTH_SHORT).show();
+        });
+        return linearLayout;
     }
 
     // TODO: 25/02/2021 Replace deprecated code
