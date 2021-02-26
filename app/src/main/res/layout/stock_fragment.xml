@@ -110,6 +110,7 @@
     </LinearLayout>
 
     <TextView
+        android:visibility="gone"
         android:id="@+id/TVAnswer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -124,12 +125,13 @@
         app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
 
     <ListView
+        android:background="@color/colorWhite"
         android:id="@+id/LLAnswer"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/TVAnswer" />
+        app:layout_constraintTop_toBottomOf="@+id/TVAnswer" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
