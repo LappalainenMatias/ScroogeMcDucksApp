@@ -28,7 +28,6 @@ public class StockViewModel extends ViewModel {
     MutableLiveData<String> selectedCategory;
     MutableLiveData<StockItem> stockItem;
     MutableLiveData<String> answer;
-    MutableLiveData<LongestUpwardTrend> longestUpwardTrend;
     MutableLiveData<List<TradingVolumeAndPriceChange>> tradingVolumesAndPriceChanges;
     MutableLiveData<List<OpeningPriceSMA5>> openingPriceSMA5s;
     StockItemAnalyzer stockItemAnalyzer;
@@ -57,23 +56,16 @@ public class StockViewModel extends ViewModel {
 
     public MutableLiveData<List<OpeningPriceSMA5>> getOpeningPriceSMA5s() {
         if (openingPriceSMA5s == null) {
-            openingPriceSMA5s = new MutableLiveData<List<OpeningPriceSMA5>>();
+            openingPriceSMA5s = new MutableLiveData<>();
         }
         return openingPriceSMA5s;
     }
 
     public MutableLiveData<List<TradingVolumeAndPriceChange>> getTradingVolumesAndPriceChanges() {
         if (tradingVolumesAndPriceChanges == null) {
-            tradingVolumesAndPriceChanges = new MutableLiveData<List<TradingVolumeAndPriceChange>>();
+            tradingVolumesAndPriceChanges = new MutableLiveData<>();
         }
         return tradingVolumesAndPriceChanges;
-    }
-
-    public MutableLiveData<LongestUpwardTrend> getLongestUpwardTrend() {
-        if (longestUpwardTrend == null) {
-            longestUpwardTrend = new MutableLiveData<LongestUpwardTrend>();
-        }
-        return longestUpwardTrend;
     }
 
     public MutableLiveData<String> getAnswer() {
@@ -176,18 +168,40 @@ public class StockViewModel extends ViewModel {
                     + length + "</b> days in a row between <b>" + sdf.format(start.getTime())
                     + "</b> and <b>" + sdf.format(end.getTime()) + "</b>.");
         }
+        getTradingVolumesAndPriceChanges().setValue(new ArrayList<>());//Hides list view
     }
 
     private void analyze_highestTradingVolumeAnsMostSignificantStockChange() {
         List<TradingVolumeAndPriceChange> tradingVolumeAndPriceChanges =
                 stockItemAnalyzer.getHighestTradingVolumesAndLargestPriceChanges(
                 getDateRange().getValue().first, getDateRange().getValue().second);
-        getAnswer().setValue("");
+
+
+        if (tradingVolumeAndPriceChanges.size() < 1) {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
+            androidx.core.util.Pair<GregorianCalendar, GregorianCalendar> dateRange = stockItemAnalyzer.getStocksDateRange();
+            getAnswer().setValue("Date range did not contain enough data. " + getStockName().getValue()
+                    + " stock data starts <b>" + sdf.format(dateRange.first.getTime())
+                    + "</b> and ends <b>" + sdf.format(dateRange.second.getTime()) + "</b>.");
+        } else {
+            getAnswer().setValue("");
+        }
         getTradingVolumesAndPriceChanges().setValue(tradingVolumeAndPriceChanges);
     }
 
     private void analyze_openingPriceComparedToSMA5() {
-        LongestUpwardTrend longestUpwardTrend = stockItemAnalyzer.getLongestUpwardTrend(getDateRange().getValue().first, getDateRange().getValue().second);
-        getAnswer().setValue("");
+        List<OpeningPriceSMA5> openingPriceSMA5s = stockItemAnalyzer.getOpeningPricesComparedToSMA5(
+                getDateRange().getValue().first, getDateRange().getValue().second);
+
+        if (openingPriceSMA5s.size() < 1) {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
+            androidx.core.util.Pair<GregorianCalendar, GregorianCalendar> dateRange = stockItemAnalyzer.getStocksDateRange();
+            getAnswer().setValue("Date range did not contain enough data. " + getStockName().getValue()
+                    + " stock data starts <b>" + sdf.format(dateRange.first.getTime())
+                    + "</b> and ends <b>" + sdf.format(dateRange.second.getTime()) + "</b>.");
+        } else {
+            getAnswer().setValue("");
+        }
+        getOpeningPriceSMA5s().setValue(openingPriceSMA5s);
     }
 }
