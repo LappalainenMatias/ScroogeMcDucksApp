@@ -1,6 +1,7 @@
 package com.example.stockanalyzer.ui;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.ButtonBarLayout;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProviders;
@@ -69,7 +70,7 @@ public class StockListFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(getContext())
-                                .setTitle("Add stock data?")
+                                .setTitle("Add stock data")
                                 .setMessage("Application supports only csv files.")
                                 .setView(getMaterialButton())
                                 .setPositiveButton("ADD", (dialogInterface, i) -> {
@@ -78,6 +79,9 @@ public class StockListFragment extends Fragment {
                                 });
 
                 AlertDialog alertDialog = materialAlertDialogBuilder.show();
+                Button button = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+                button.setAlpha(0.5f);
+                button.setClickable(false);
             }
         });
 
