@@ -8,8 +8,10 @@ import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -61,6 +63,12 @@ public class StockListFragment extends Fragment {
         ImageView searchClose = searchView.findViewById(androidx.appcompat.R.id.search_close_btn);
         FloatingActionButton FABAdd = viewContainer.findViewById(R.id.FABAdd);
 
+        // example of file manager
+//        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+//        Uri uri = Uri.parse("/"); // a directory
+//        intent.setDataAndType(uri, "*/*");
+//        startActivity(Intent.createChooser(intent, "Open folder"));
+
         searchIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_search_24px));
         textView.setTextColor(Color.WHITE);
         textView.setHintTextColor(Color.WHITE);
@@ -70,13 +78,13 @@ public class StockListFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(getContext())
-                                .setTitle("Add stock data")
-                                .setMessage("Application supports only csv files.")
-                                .setView(getMaterialButton())
-                                .setPositiveButton("ADD", (dialogInterface, i) -> {
-                                })
-                                .setNegativeButton("CANCEL", (dialogInterface, i) -> {
-                                });
+                        .setTitle("Add stock data")
+                        .setMessage("Application supports only csv files.")
+                        .setView(getMaterialButton())
+                        .setPositiveButton("ADD", (dialogInterface, i) -> {
+                        })
+                        .setNegativeButton("CANCEL", (dialogInterface, i) -> {
+                        });
 
                 AlertDialog alertDialog = materialAlertDialogBuilder.show();
                 Button button = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
@@ -104,7 +112,7 @@ public class StockListFragment extends Fragment {
 
     private LinearLayout getMaterialButton() {
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        LinearLayout linearLayout =  (LinearLayout) inflater.inflate(R.layout.choose_file_btn, null, true);
+        LinearLayout linearLayout = (LinearLayout) inflater.inflate(R.layout.choose_file_btn, null, true);
         MaterialButton materialButton = linearLayout.findViewById(R.id.BTNChooseFile);
         materialButton.setOnClickListener(v -> {
             Toast.makeText(getContext(), "Clicked", Toast.LENGTH_SHORT).show();
