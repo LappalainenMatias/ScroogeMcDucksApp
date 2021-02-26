@@ -90,7 +90,7 @@ public class StockArrayAdapter extends ArrayAdapter<StockItem> implements Filter
     private String getStocksDateRange(int position) {
         StockItemAnalyzer stockItemAnalyzer = new StockItemAnalyzer(stockItems.get(position));
         Pair<GregorianCalendar, GregorianCalendar> dateRange = stockItemAnalyzer.getStocksDateRange();
-        SimpleDateFormat format_dd_MM_yyyy = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat format_dd_MM_yyyy = new SimpleDateFormat("dd/MM/yyyy");
         String formattedEarlier = format_dd_MM_yyyy.format(dateRange.first.getTime());
         String formattedLatest = format_dd_MM_yyyy.format(dateRange.second.getTime());
         return formattedEarlier + getContext().getResources().getString(R.string._to_) + formattedLatest;
