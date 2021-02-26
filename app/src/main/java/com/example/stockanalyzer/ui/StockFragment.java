@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
 import com.example.stockanalyzer.R;
+import com.example.stockanalyzer.arrayadapter.OpeningPriceSMA5ArrayAdapter;
 import com.example.stockanalyzer.arrayadapter.TradingVolumePriceChangeArrayAdapter;
 import com.example.stockanalyzer.viewmodels.StockViewModel;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
@@ -100,6 +101,12 @@ public class StockFragment extends Fragment {
         stockViewModel.getTradingVolumesAndPriceChanges().observe(getViewLifecycleOwner(), tradingVolumeAndPriceChanges -> {
             ArrayAdapter arrayAdapter = new TradingVolumePriceChangeArrayAdapter(
                     getContext(), getActivity(), tradingVolumeAndPriceChanges);
+            LVAnswer.setAdapter(arrayAdapter);
+        });
+
+        stockViewModel.getOpeningPriceSMA5s().observe(getViewLifecycleOwner(), openingPriceSMA5s -> {
+            ArrayAdapter arrayAdapter = new OpeningPriceSMA5ArrayAdapter(
+                    getContext(), getActivity(), openingPriceSMA5s);
             LVAnswer.setAdapter(arrayAdapter);
         });
     }
