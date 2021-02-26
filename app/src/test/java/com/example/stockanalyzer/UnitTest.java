@@ -53,11 +53,14 @@ public class UnitTest {
         StockItem stockItem = exampleData.exampleStockItem1();
         StockItemAnalyzer stockItemAnalyzer = new StockItemAnalyzer(stockItem);
         LongestUpwardTrend output = stockItemAnalyzer.getLongestUpwardTrend(
-                new GregorianCalendar(2000, 0, 1), new GregorianCalendar(2030, 0, 1));
+                new GregorianCalendar(2000, 0, 1),
+                new GregorianCalendar(2030, 0, 1));
 
         Assert.assertEquals(4, output.size);
-        Assert.assertEquals((new GregorianCalendar(2010, 0, 2).getTimeInMillis()), output.start.getTimeInMillis());
-        Assert.assertEquals((new GregorianCalendar(2010, 0, 5).getTimeInMillis()), output.end.getTimeInMillis());
+        Assert.assertEquals((new GregorianCalendar(2010, 0, 2).getTimeInMillis()),
+                output.start.getTimeInMillis());
+        Assert.assertEquals((new GregorianCalendar(2010, 0, 5).getTimeInMillis()),
+                output.end.getTimeInMillis());
     }
 
     @Test
@@ -65,12 +68,16 @@ public class UnitTest {
         StockItem stockItem = exampleData.exampleStockItem2();
         StockItemAnalyzer stockItemAnalyzer = new StockItemAnalyzer(stockItem);
         LongestUpwardTrend output = stockItemAnalyzer.getLongestUpwardTrend(
-                new GregorianCalendar(2000, 0, 1), new GregorianCalendar(2030, 0, 1));
+                new GregorianCalendar(2000, 0, 1),
+                new GregorianCalendar(2030, 0, 1));
 
-        Assert.assertEquals((new GregorianCalendar(2021, 1, 17).getTimeInMillis()), output.start.getTimeInMillis());
-        Assert.assertEquals((new GregorianCalendar(2021, 1, 23).getTimeInMillis()), output.end.getTimeInMillis());
+        Assert.assertEquals((new GregorianCalendar(2021, 1, 17).getTimeInMillis()),
+                output.start.getTimeInMillis());
+        Assert.assertEquals((new GregorianCalendar(2021, 1, 23).getTimeInMillis()),
+                output.end.getTimeInMillis());
         Assert.assertEquals(3, output.size);
     }
+
     @Test
     public void getLongestUpwardTrend_RangeStartAndEndSameDay() {
         StockItem stockItem = exampleData.exampleStockItem1();
@@ -116,7 +123,8 @@ public class UnitTest {
     @Test
     public void createTradingVolumeAndPriceChange() {
         TradingVolumeAndPriceChange tradingVolumeAndPriceChange =
-                new TradingVolumeAndPriceChange(new GregorianCalendar(2000, 1, 2), 2000, 5.1);
+                new TradingVolumeAndPriceChange(
+                        new GregorianCalendar(2000, 1, 2), 2000, 5.1);
 
         Assert.assertEquals(5.1, tradingVolumeAndPriceChange.priceChange, 0.001);
         Assert.assertEquals(2000, tradingVolumeAndPriceChange.tradingVolume, 0.001);
@@ -129,22 +137,27 @@ public class UnitTest {
         StockItem stockItem = exampleData.exampleStockItem1();
         StockItemAnalyzer stockItemAnalyzer = new StockItemAnalyzer(stockItem);
 
-        ArrayList<TradingVolumeAndPriceChange> tradingVolumeAndPriceChanges = stockItemAnalyzer.getHighestTradingVolumesAndLargestPriceChanges(
-                new GregorianCalendar(2000, 0, 1), new GregorianCalendar(2030, 0, 1));
+        ArrayList<TradingVolumeAndPriceChange> tradingVolumeAndPriceChanges =
+                stockItemAnalyzer.getHighestTradingVolumesAndLargestPriceChanges(
+                        new GregorianCalendar(2000, 0, 1),
+                        new GregorianCalendar(2030, 0, 1));
 
         TradingVolumeAndPriceChange first = tradingVolumeAndPriceChanges.get(0);
         TradingVolumeAndPriceChange second = tradingVolumeAndPriceChanges.get(1);
         TradingVolumeAndPriceChange last = tradingVolumeAndPriceChanges.get(tradingVolumeAndPriceChanges.size() - 1);
 
-        Assert.assertEquals(new GregorianCalendar(2010, 0, 1).getTimeInMillis(), first.gregorianCalendar.getTimeInMillis());
+        Assert.assertEquals(new GregorianCalendar(2010, 0, 1).getTimeInMillis(),
+                first.gregorianCalendar.getTimeInMillis());
         Assert.assertEquals(20000, first.tradingVolume, 0.001);
         Assert.assertEquals(0.13, first.priceChange, 0.001);
 
-        Assert.assertEquals(new GregorianCalendar(2010, 0, 4).getTimeInMillis(), second.gregorianCalendar.getTimeInMillis());
+        Assert.assertEquals(new GregorianCalendar(2010, 0, 4).getTimeInMillis(),
+                second.gregorianCalendar.getTimeInMillis());
         Assert.assertEquals(20000, second.tradingVolume, 0.001);
         Assert.assertEquals(0.09, second.priceChange, 0.001);
 
-        Assert.assertEquals(new GregorianCalendar(2010, 0, 5).getTimeInMillis(), last.gregorianCalendar.getTimeInMillis());
+        Assert.assertEquals(new GregorianCalendar(2010, 0, 5).getTimeInMillis(),
+                last.gregorianCalendar.getTimeInMillis());
         Assert.assertEquals(5000, last.tradingVolume, 0.001);
         Assert.assertEquals(0.01, last.priceChange, 0.001);
     }
@@ -154,22 +167,27 @@ public class UnitTest {
         StockItem stockItem = exampleData.exampleStockItem2();
         StockItemAnalyzer stockItemAnalyzer = new StockItemAnalyzer(stockItem);
 
-        ArrayList<TradingVolumeAndPriceChange> tradingVolumeAndPriceChanges = stockItemAnalyzer.getHighestTradingVolumesAndLargestPriceChanges(
-                        new GregorianCalendar(2000, 0, 1), new GregorianCalendar(2030, 0, 1));
+        ArrayList<TradingVolumeAndPriceChange> tradingVolumeAndPriceChanges =
+                stockItemAnalyzer.getHighestTradingVolumesAndLargestPriceChanges(
+                        new GregorianCalendar(2000, 0, 1),
+                        new GregorianCalendar(2030, 0, 1));
 
         TradingVolumeAndPriceChange first = tradingVolumeAndPriceChanges.get(0);
         TradingVolumeAndPriceChange second = tradingVolumeAndPriceChanges.get(1);
         TradingVolumeAndPriceChange last = tradingVolumeAndPriceChanges.get(tradingVolumeAndPriceChanges.size() - 1);
 
-        Assert.assertEquals(new GregorianCalendar(2021, 1, 16).getTimeInMillis(), first.gregorianCalendar.getTimeInMillis());
+        Assert.assertEquals(new GregorianCalendar(2021, 1, 16).getTimeInMillis(),
+                first.gregorianCalendar.getTimeInMillis());
         Assert.assertEquals(21000, first.tradingVolume, 0.001);
         Assert.assertEquals(0.02, first.priceChange, 0.001);
 
-        Assert.assertEquals(new GregorianCalendar(2021, 1, 14).getTimeInMillis(), second.gregorianCalendar.getTimeInMillis());
+        Assert.assertEquals(new GregorianCalendar(2021, 1, 14).getTimeInMillis(),
+                second.gregorianCalendar.getTimeInMillis());
         Assert.assertEquals(18000, second.tradingVolume, 0.001);
         Assert.assertEquals(2.9, second.priceChange, 0.001);
 
-        Assert.assertEquals(new GregorianCalendar(2021, 1, 23).getTimeInMillis(), last.gregorianCalendar.getTimeInMillis());
+        Assert.assertEquals(new GregorianCalendar(2021, 1, 23).getTimeInMillis(),
+                last.gregorianCalendar.getTimeInMillis());
         Assert.assertEquals(1000, last.tradingVolume, 0.001);
         Assert.assertEquals(0.2, last.priceChange, 0.001);
     }
@@ -199,13 +217,13 @@ public class UnitTest {
 
         Assert.assertEquals(2, openingPriceSMA5s.size());
 
-        Assert.assertEquals(0.991545, first.getOpeningPriceAndSMA5Difference(), 0.0001);
+        Assert.assertEquals(-0.845, first.getOpeningPriceAndSMA5Difference(), 0.01);
         Assert.assertEquals(new GregorianCalendar(2010, 0, 7).getTimeInMillis(),
                 first.gregorianCalendar.getTimeInMillis());
 
         Assert.assertEquals(new GregorianCalendar(2010, 0, 6).getTimeInMillis(),
                 second.gregorianCalendar.getTimeInMillis());
-        Assert.assertEquals(0.991036, second.getOpeningPriceAndSMA5Difference(), 0.0001);
+        Assert.assertEquals(-0.8964, second.getOpeningPriceAndSMA5Difference(), 0.01);
     }
 
     @Test
@@ -220,13 +238,13 @@ public class UnitTest {
 
         Assert.assertEquals(2, openingPriceSMA5s.size());
 
-        Assert.assertEquals(1.000802, first.getOpeningPriceAndSMA5Difference(), 0.0001);
+        Assert.assertEquals(0.0802, first.getOpeningPriceAndSMA5Difference(), 0.0001);
         Assert.assertEquals(new GregorianCalendar(2021, 1, 18).getTimeInMillis(),
                 first.gregorianCalendar.getTimeInMillis());
 
         Assert.assertEquals(new GregorianCalendar(2021, 1, 23).getTimeInMillis(),
                 second.gregorianCalendar.getTimeInMillis());
-        Assert.assertEquals(0.995043, second.getOpeningPriceAndSMA5Difference(), 0.0001);
+        Assert.assertEquals(-0.4956, second.getOpeningPriceAndSMA5Difference(), 0.0001);
     }
 
     @Test
@@ -239,26 +257,30 @@ public class UnitTest {
         Assert.assertEquals(new GregorianCalendar(2000, 0, 1).getTimeInMillis(),
                 openingPriceSMA5.gregorianCalendar.getTimeInMillis());
         Assert.assertEquals(10.2, openingPriceSMA5.SMA5, 0.001);
-        Assert.assertEquals(1.0099, openingPriceSMA5.getOpeningPriceAndSMA5Difference(), 0.00001);
+        Assert.assertEquals(0.99, openingPriceSMA5.getOpeningPriceAndSMA5Difference(), 0.01);
     }
 
     @Test
-    public void getStocksDateRange_exampleStockItem1(){
+    public void getStocksDateRange_exampleStockItem1() {
         StockItem stockItem = exampleData.exampleStockItem1();
         StockItemAnalyzer stockItemAnalyzer = new StockItemAnalyzer(stockItem);
         Pair<GregorianCalendar, GregorianCalendar> dateRange = stockItemAnalyzer.getStocksDateRange();
 
-        Assert.assertEquals((new GregorianCalendar(2010, 0, 1)).getTimeInMillis(), dateRange.first.getTimeInMillis());
-        Assert.assertEquals((new GregorianCalendar(2010, 0, 7)).getTimeInMillis(), dateRange.second.getTimeInMillis());
+        Assert.assertEquals((new GregorianCalendar(2010, 0, 1))
+                .getTimeInMillis(), dateRange.first.getTimeInMillis());
+        Assert.assertEquals((new GregorianCalendar(2010, 0, 7))
+                .getTimeInMillis(), dateRange.second.getTimeInMillis());
     }
 
     @Test
-    public void getStocksDateRange_exampleStockItem2(){
+    public void getStocksDateRange_exampleStockItem2() {
         StockItem stockItem = exampleData.exampleStockItem2();
         StockItemAnalyzer stockItemAnalyzer = new StockItemAnalyzer(stockItem);
         Pair<GregorianCalendar, GregorianCalendar> dateRange = stockItemAnalyzer.getStocksDateRange();
 
-        Assert.assertEquals((new GregorianCalendar(2021, 1, 13)).getTimeInMillis(), dateRange.first.getTimeInMillis());
-        Assert.assertEquals((new GregorianCalendar(2021, 1, 23)).getTimeInMillis(), dateRange.second.getTimeInMillis());
+        Assert.assertEquals((new GregorianCalendar(2021, 1, 13))
+                .getTimeInMillis(), dateRange.first.getTimeInMillis());
+        Assert.assertEquals((new GregorianCalendar(2021, 1, 23))
+                .getTimeInMillis(), dateRange.second.getTimeInMillis());
     }
 }
