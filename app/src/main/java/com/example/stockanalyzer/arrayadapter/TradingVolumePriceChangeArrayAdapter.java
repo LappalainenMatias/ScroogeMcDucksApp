@@ -24,9 +24,9 @@ import java.util.List;
 
 public class TradingVolumePriceChangeArrayAdapter extends ArrayAdapter<TradingVolumeAndPriceChange>{
 
-    private List<TradingVolumeAndPriceChange> tradingVolumeAndPriceChanges;
-    private Activity activity;
-    private SimpleDateFormat format_dd_MM_yyyy = new SimpleDateFormat("dd-MM-yyyy");
+    private final List<TradingVolumeAndPriceChange> tradingVolumeAndPriceChanges;
+    private final Activity activity;
+    private final SimpleDateFormat format_dd_MM_yyyy = new SimpleDateFormat("dd/MM/yyyy");
 
     public TradingVolumePriceChangeArrayAdapter(Context context, Activity activity,
                                                 List<TradingVolumeAndPriceChange> tradingVolumeAndPriceChanges) {
@@ -46,8 +46,17 @@ public class TradingVolumePriceChangeArrayAdapter extends ArrayAdapter<TradingVo
         // TODO: 25.2.2021 Strings to R.strings
         TVDate.setText(format_dd_MM_yyyy.format(tvpc.gregorianCalendar.getTime()));
         TVTradingVolume.setText("Trading volume: " + ((int)tvpc.tradingVolume));
-        TVPriceChange.setText("Price change: " + String.format("%.3g%n", tvpc.priceChange));
+        TVPriceChange.setText("Price change: " + round(tvpc.priceChange, 3) + " $");
 
         return rowView;
+    }
+
+    public static double round(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+
+        long factor = (long) Math.pow(10, places);
+        value = value * factor;
+        long tmp = Math.round(value);
+        return (double) tmp / factor;
     }
 }
