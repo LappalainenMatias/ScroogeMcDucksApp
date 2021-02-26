@@ -19,6 +19,6 @@ public class OpeningPriceSMA5 {
     public double getOpeningPriceAndSMA5Difference() {
         if (openingPrice == 0)
             return 0;
-        return SMA5 / openingPrice;
+        return ((SMA5 / openingPrice) - 1) * 100;
     }
 }
