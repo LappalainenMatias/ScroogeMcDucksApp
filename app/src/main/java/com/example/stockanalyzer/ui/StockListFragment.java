@@ -1,11 +1,16 @@
 package com.example.stockanalyzer.ui;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.ButtonBarLayout;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -49,8 +54,10 @@ public class StockListFragment extends Fragment {
     private StockListViewModel stockListViewModel;
 
     View viewContainer;
+    private MaterialButton materialButton;
     private ListView LVStocks;
     private StockArrayAdapter stockAdapter;
+    private MaterialAlertDialogBuilder materialAlertDialogBuilder;
 
     @Nullable
     @Override
@@ -63,34 +70,25 @@ public class StockListFragment extends Fragment {
         ImageView searchClose = searchView.findViewById(androidx.appcompat.R.id.search_close_btn);
         FloatingActionButton FABAdd = viewContainer.findViewById(R.id.FABAdd);
 
-        // example of file manager
-//        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-//        Uri uri = Uri.parse("/"); // a directory
-//        intent.setDataAndType(uri, "*/*");
-//        startActivity(Intent.createChooser(intent, "Open folder"));
-
         searchIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_search_24px));
         textView.setTextColor(Color.WHITE);
         textView.setHintTextColor(Color.WHITE);
         searchClose.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_clear_24px));
 
-        FABAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(getContext())
-                        .setTitle("Add stock data")
-                        .setMessage("Application supports only csv files.")
-                        .setView(getMaterialButton())
-                        .setPositiveButton("ADD", (dialogInterface, i) -> {
-                        })
-                        .setNegativeButton("CANCEL", (dialogInterface, i) -> {
-                        });
+        FABAdd.setOnClickListener(v -> {
+            materialAlertDialogBuilder = new MaterialAlertDialogBuilder(getContext())
+                    .setTitle("Add stock data")
+                    .setMessage("Application only supports csv files.")
+                    .setView(getMaterialButton())
+                    .setPositiveButton("ADD", (dialogInterface, i) -> {
+                    })
+                    .setNegativeButton("CANCEL", (dialogInterface, i) -> {
+                    });
 
-                AlertDialog alertDialog = materialAlertDialogBuilder.show();
-                Button button = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
-                button.setAlpha(0.5f);
-                button.setClickable(false);
-            }
+            AlertDialog alertDialog = materialAlertDialogBuilder.show();
+            Button button = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+            button.setAlpha(0.5f);
+            button.setClickable(false);
         });
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -110,15 +108,35 @@ public class StockListFragment extends Fragment {
         return viewContainer;
     }
 
+    private ActivityResultLauncher<Intent> resultLauncher;
+    private Intent intent;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        intent = new Intent(Intent.ACTION_GET_CONTENT);
+        Uri uri = Uri.parse("/downloads"); // a directory
+        intent.setDataAndType(uri, "*/*");
+        resultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent data = result.getData();
+                        materialButton.setText(data.getPackage());
+                    }
+                });
+    }
+
     private LinearLayout getMaterialButton() {
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         LinearLayout linearLayout = (LinearLayout) inflater.inflate(R.layout.choose_file_btn, null, true);
-        MaterialButton materialButton = linearLayout.findViewById(R.id.BTNChooseFile);
+        materialButton = linearLayout.findViewById(R.id.BTNChooseFile);
         materialButton.setOnClickListener(v -> {
-            Toast.makeText(getContext(), "Clicked", Toast.LENGTH_SHORT).show();
+            resultLauncher.launch(intent);
         });
+
         return linearLayout;
     }
+
 
     // TODO: 25/02/2021 Replace deprecated code
     @Override
