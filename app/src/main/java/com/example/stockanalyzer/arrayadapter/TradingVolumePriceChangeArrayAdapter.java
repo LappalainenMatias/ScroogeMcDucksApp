@@ -6,20 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.TextView;
-
-import androidx.core.util.Pair;
-
 import com.example.stockanalyzer.R;
-import com.example.stockanalyzer.stock.StockItem;
-import com.example.stockanalyzer.stock.StockItemAnalyzer;
 import com.example.stockanalyzer.stock.TradingVolumeAndPriceChange;
-
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 public class TradingVolumePriceChangeArrayAdapter extends ArrayAdapter<TradingVolumeAndPriceChange>{
