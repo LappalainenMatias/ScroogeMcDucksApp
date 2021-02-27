@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:menu="@menu/menu_stock"
         app:navigationIcon="@drawable/ic_arrow_back_24px"
-        app:title="Stocks name"
+        app:title="Stock's name"
         app:titleTextColor="@color/colorWhite" />
 
     <View
