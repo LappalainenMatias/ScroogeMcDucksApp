@@ -1,8 +1,9 @@
 apply plugin: 'com.android.application'
+apply plugin: 'dagger.hilt.android.plugin'
 
 android {
     compileSdkVersion 30
-    buildToolsVersion "30.0.1"
+    buildToolsVersion "30.0.2"
 
     defaultConfig {
         applicationId "com.example.stockanalyzer"
@@ -29,6 +30,9 @@ android {
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation "com.google.dagger:hilt-android:$hilt_version"
+    annotationProcessor  "com.google.dagger:hilt-compiler:$hilt_version"
+
     def nav_version = "2.3.3"
     implementation "androidx.navigation:navigation-fragment:$nav_version"
     implementation "androidx.navigation:navigation-ui:$nav_version"
