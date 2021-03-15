@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/colorWhite"
+    android:paddingTop="8dp"
     android:paddingLeft="24dp"
     android:paddingRight="24dp"
     android:orientation="vertical">
@@ -17,5 +18,23 @@
         android:layout_height="wrap_content"
         android:text="Choose file"
         app:icon="@drawable/ic_attach_file_24px"/>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:visibility="gone"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:id="@+id/LayoutStocksName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:hint="Stock name"
+        android:paddingEnd="4dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/EDDateRangeStart"
+            android:textColor="@color/colorBlack"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawablePadding="8dp" />
+    </com.google.android.material.textfield.TextInputLayout>
 
 </LinearLayout>
