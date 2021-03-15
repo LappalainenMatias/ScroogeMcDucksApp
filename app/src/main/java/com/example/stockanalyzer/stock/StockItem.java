@@ -1,28 +1,14 @@
 package com.example.stockanalyzer.stock;
 
-import android.util.Pair;
-
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class StockItem {
-    public int id;
-    public String name;
+    public String fileName;
     public HashMap<GregorianCalendar, StockStatistic> stockStatisticByCalendar;
 
-    public StockItem(int id, String name, HashMap<GregorianCalendar, StockStatistic> stockStatistics) {
-        this.id = id;
-        this.name = name;
+    public StockItem(String fileName, HashMap<GregorianCalendar, StockStatistic> stockStatistics) {
+        this.fileName = fileName;
         this.stockStatisticByCalendar = stockStatistics;
-    }
-
-    public StockItem(int id, String name) {
-        this.id = id;
-        this.name = name;
-        this.stockStatisticByCalendar = new HashMap<>();
     }
 }
