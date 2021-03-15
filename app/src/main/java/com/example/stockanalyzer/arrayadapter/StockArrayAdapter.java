@@ -16,9 +16,10 @@ import com.example.stockanalyzer.R;
 import com.example.stockanalyzer.stock.StockItem;
 import com.example.stockanalyzer.stock.StockItemAnalyzer;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -35,15 +36,17 @@ public class StockArrayAdapter extends ArrayAdapter<StockItem> implements Filter
         this.activity = activity;
     }
 
+    @NotNull
+    @Override
     public View getView(final int position, View view, final ViewGroup parent) {
         LayoutInflater inflater = activity.getLayoutInflater();
         View rowView = inflater.inflate(R.layout.item_stock, null, true);
         TextView TVStockName = rowView.findViewById(R.id.TVStockName);
-        TextView TVStockDateRange = rowView.findViewById(R.id.TVStockDateRange);//Informs to user the first and last stock statistic date.
+        TextView TVStockDateRange = rowView.findViewById(R.id.TVStockDateRange);
         StockItem stockItem = stockItems.get(position);
 
-        TVStockName.setText(stockItem.name);
-        if(stockItem.stockStatisticByCalendar.keySet().size() != 0){
+        TVStockName.setText(stockItem.fileName);
+        if (stockItem.stockStatisticByCalendar.keySet().size() != 0) {
             TVStockDateRange.setText(getContext().getResources().getString(R.string.stock_data_from) + getStocksDateRange(position));
         } else {
             TVStockDateRange.setText(getContext().getResources().getString(R.string.stock_data_was_not_found));
@@ -56,6 +59,7 @@ public class StockArrayAdapter extends ArrayAdapter<StockItem> implements Filter
         return stockItems.size();
     }
 
+    @NotNull
     @Override
     public Filter getFilter() {
         return new Filter() {
@@ -67,7 +71,7 @@ public class StockArrayAdapter extends ArrayAdapter<StockItem> implements Filter
                 } else {
                     ArrayList<StockItem> filteredList = new ArrayList<>();
                     for (StockItem item : stockItemsCopy) {
-                        if (item.name.toLowerCase().contains(charString.toLowerCase())) {
+                        if (item.fileName.toLowerCase().contains(charString.toLowerCase())) {
                             filteredList.add(item);
                         }
                     }
@@ -79,6 +83,7 @@ public class StockArrayAdapter extends ArrayAdapter<StockItem> implements Filter
                 return filterResults;
             }
 
+            @SuppressWarnings("unchecked")
             @Override
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
                 stockItems = (ArrayList<StockItem>) filterResults.values;
