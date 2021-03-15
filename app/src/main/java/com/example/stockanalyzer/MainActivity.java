@@ -7,6 +7,10 @@ import android.os.Bundle;
 import com.example.stockanalyzer.ui.StockFragment;
 import com.example.stockanalyzer.ui.StockListFragment;
 
+import dagger.hilt.android.AndroidEntryPoint;
+
+
+@AndroidEntryPoint
 public class MainActivity extends AppCompatActivity {
 
     @Override
