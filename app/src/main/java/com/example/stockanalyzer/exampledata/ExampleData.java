@@ -34,7 +34,7 @@ public class ExampleData {
         stats.put(new GregorianCalendar(2010, 0, 7),
                 (new StockStatistic().setDate(new GregorianCalendar(2010, 0, 7))
                         .setClosePrice(137.39).setVolume(11000).setOpenPrice(137.20).setHighPrice(138.0).setLowPrice(135.2)));
-        return new StockItem(1,"Apple", stats);
+        return new StockItem("Apple.csv", stats);
     }
 
     /**
@@ -63,6 +63,6 @@ public class ExampleData {
         stats.put(new GregorianCalendar(2021, 1, 23),
                 (new StockStatistic().setDate(new GregorianCalendar(2021, 1, 23))
                         .setClosePrice(137.4).setVolume(1000).setOpenPrice(137.20).setHighPrice(138.0).setLowPrice(135.2)));
-        return new StockItem(2,"GameStop", stats);
+        return new StockItem("GameStop.csv", stats);
     }
 }
