@@ -39,16 +39,6 @@ public class UnitTest {
     }
 
     @Test
-    public void createStockItem() {
-        int id = 0;
-        String name = "Apple";
-        StockItem stockItem = new StockItem(id, name);
-
-        Assert.assertEquals(id, stockItem.id);
-        Assert.assertEquals("Apple", stockItem.name);
-    }
-
-    @Test
     public void getLongestUpwardTrend_exampleStockItem1() {
         StockItem stockItem = exampleData.exampleStockItem1();
         StockItemAnalyzer stockItemAnalyzer = new StockItemAnalyzer(stockItem);
@@ -56,7 +46,7 @@ public class UnitTest {
                 new GregorianCalendar(2000, 0, 1),
                 new GregorianCalendar(2030, 0, 1));
 
-        Assert.assertEquals(4, output.size);
+        Assert.assertEquals(4, output.length);
         Assert.assertEquals((new GregorianCalendar(2010, 0, 2).getTimeInMillis()),
                 output.start.getTimeInMillis());
         Assert.assertEquals((new GregorianCalendar(2010, 0, 5).getTimeInMillis()),
@@ -75,7 +65,7 @@ public class UnitTest {
                 output.start.getTimeInMillis());
         Assert.assertEquals((new GregorianCalendar(2021, 1, 23).getTimeInMillis()),
                 output.end.getTimeInMillis());
-        Assert.assertEquals(3, output.size);
+        Assert.assertEquals(3, output.length);
     }
 
     @Test
@@ -89,7 +79,7 @@ public class UnitTest {
 
         Assert.assertNull(output.start);
         Assert.assertNull(output.end);
-        Assert.assertEquals(0, output.size);
+        Assert.assertEquals(0, output.length);
     }
 
 
@@ -104,7 +94,7 @@ public class UnitTest {
 
         Assert.assertNull(output.start);
         Assert.assertNull(output.end);
-        Assert.assertEquals(0, output.size);
+        Assert.assertEquals(0, output.length);
     }
 
     @Test
@@ -117,7 +107,7 @@ public class UnitTest {
 
         Assert.assertNull(output.start);
         Assert.assertNull(output.end);
-        Assert.assertEquals(0, output.size);
+        Assert.assertEquals(0, output.length);
     }
 
     @Test
