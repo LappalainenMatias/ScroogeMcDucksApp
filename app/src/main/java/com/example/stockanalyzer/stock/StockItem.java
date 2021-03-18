@@ -9,6 +9,10 @@ public class StockItem {
 
     public StockItem(String fileName, HashMap<GregorianCalendar, StockStatistic> stockStatistics) {
         this.fileName = fileName;
-        this.stockStatisticByCalendar = stockStatistics;
+        if(stockStatistics == null){
+            stockStatisticByCalendar = new HashMap<>();
+        } else {
+            this.stockStatisticByCalendar = stockStatistics;
+        }
     }
 }
