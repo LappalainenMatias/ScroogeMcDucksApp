@@ -18,11 +18,6 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 
-import javax.inject.Inject;
-
-import dagger.hilt.android.scopes.ViewModelScoped;
-
-@ViewModelScoped
 public class StockViewModel extends ViewModel {
 
     MutableLiveData<Pair<GregorianCalendar, GregorianCalendar>> dateRange;
@@ -33,19 +28,21 @@ public class StockViewModel extends ViewModel {
     MutableLiveData<String> answer;
     MutableLiveData<List<TradingVolumeAndPriceChange>> tradingVolumesAndPriceChanges;
     MutableLiveData<List<OpeningPriceSMA5>> openingPriceSMA5s;
+
+    StockRepository stockRepository;
     StockItemAnalyzer stockItemAnalyzer;
 
-    @Inject
-    StockRepository stockRepository;
-
-    public StockViewModel(String stockFileName) {
+    public StockViewModel(String stockFileName, StockRepository stockRepository) {
         this.stockFileName = new MutableLiveData<>(stockFileName);
+        this.stockRepository = stockRepository;
         stockItemAnalyzer = new StockItemAnalyzer(getStockItem().getValue());
     }
 
     public MutableLiveData<Pair<GregorianCalendar, GregorianCalendar>> getDateRange() {
         if (dateRange == null) {
-            dateRange = new MutableLiveData<>();
+            dateRange = new MutableLiveData<>(new Pair<>(
+                    new GregorianCalendar(2021,0, 1),
+                    new GregorianCalendar(2021,1, 1)));
             loadDateRange();
         }
         return dateRange;
@@ -112,7 +109,17 @@ public class StockViewModel extends ViewModel {
         return selectedCategory;
     }
 
+    /**
+     * @return True if file was deleted
+     */
+    public boolean deleteFile(){
+        return stockRepository.deleteFile(getStockFileName().getValue());
+    }
+
     public void analyze() {
+        if(getStockItem().getValue() == null){
+            getAnswer().setValue("Something went wrong and data could not be read!");
+        }
         switch (getSelectedCategory().getValue()) {
             // TODO: 25/02/2021 Use R.string instead of fixed value.
             case "Longest upward trend":
@@ -145,6 +152,9 @@ public class StockViewModel extends ViewModel {
             if (latest == null || latest.getTimeInMillis() < gregorianCalendar.getTimeInMillis()) {
                 latest = gregorianCalendar;
             }
+        }
+        if(earliest == null || latest == null){
+            return;
         }
         dateRange.setValue(new Pair<>(earliest, latest));
     }
