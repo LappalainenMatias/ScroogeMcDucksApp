@@ -4,6 +4,8 @@ import android.net.Uri;
 
 import com.example.stockanalyzer.stock.StockItem;
 import com.example.stockanalyzer.storage.StockStorageHandler;
+
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import javax.inject.Inject;
@@ -23,6 +25,14 @@ public class StockRepository {
      */
     public boolean saveFile(Uri uri, String fileName){
         return stockStorageHandler.saveFile(uri, fileName);
+    }
+
+    /**
+     * @return False if there was a problem saving the file. For example,
+     * file type or the data in a file is incorrect.
+     */
+    public boolean saveFile(InputStream stream, String fileName){
+        return stockStorageHandler.saveFile(stream, fileName);
     }
 
     /**
