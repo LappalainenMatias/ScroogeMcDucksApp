@@ -2,8 +2,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_search"
-        android:icon="@drawable/ic_more_vert_24px"
+        android:id="@+id/delete_file"
+        android:icon="@drawable/ic_outline_delete_24"
         android:title="@string/menu"
         app:showAsAction="always" />
+
 </menu>
