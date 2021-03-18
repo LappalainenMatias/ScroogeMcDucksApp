@@ -6,22 +6,32 @@ import android.os.Bundle;
 import android.text.Html;
 import android.util.Pair;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
 import com.example.stockanalyzer.R;
 import com.example.stockanalyzer.arrayadapter.OpeningPriceSMA5ArrayAdapter;
 import com.example.stockanalyzer.arrayadapter.TradingVolumePriceChangeArrayAdapter;
+import com.example.stockanalyzer.viewmodels.StockListViewModel;
 import com.example.stockanalyzer.viewmodels.StockViewModel;
+import com.example.stockanalyzer.viewmodels.ViewModelFactory;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -31,10 +41,15 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
+import javax.inject.Inject;
+
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class StockFragment extends Fragment {
+
+    @Inject
+    ViewModelFactory viewModelFactory;
 
     private StockViewModel stockViewModel;
 
@@ -48,12 +63,19 @@ public class StockFragment extends Fragment {
     private ListView LVAnswer;
     View containerView;
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getActivity() != null) {
+            viewModelFactory.setFileName(getArguments().getString("stockFileName", ""));
+            stockViewModel = viewModelFactory.create(StockViewModel.class);
+        }
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        stockViewModel = new StockViewModel(getArguments().getString("stockFileName", ""));
-
         containerView = inflater.inflate(R.layout.stock_fragment, container, false);
         textInputLayout = containerView.findViewById(R.id.textInputLayout);
         EDDateRangeStart = containerView.findViewById(R.id.EDDateRangeStart);
@@ -61,9 +83,13 @@ public class StockFragment extends Fragment {
         TVAnswer = containerView.findViewById(R.id.TVAnswer);
         LVAnswer = containerView.findViewById(R.id.LLAnswer);
         toolbar = containerView.findViewById(R.id.StockToolbar);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, stockViewModel.getCategories().getValue());
-        ((MaterialAutoCompleteTextView) textInputLayout.getEditText()).setAdapter(adapter);
-        ((MaterialAutoCompleteTextView) textInputLayout.getEditText()).setText(adapter.getItem(0), false);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),
+                android.R.layout.simple_spinner_dropdown_item,
+                stockViewModel.getCategories().getValue());
+        ((MaterialAutoCompleteTextView) textInputLayout.getEditText())
+                .setAdapter(adapter);
+        ((MaterialAutoCompleteTextView) textInputLayout.getEditText())
+                .setText(adapter.getItem(0), false);
 
         DatePickerRangeStart = (view, year, monthOfYear, dayOfMonth) -> {
             GregorianCalendar rangeStart = new GregorianCalendar(year, monthOfYear, dayOfMonth);
@@ -93,19 +119,36 @@ public class StockFragment extends Fragment {
             Navigation.findNavController(v).navigate(R.id.action_stockFragment_to_stockListFragment);
         });
 
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                Navigation.findNavController(containerView)
+                        .navigate(R.id.action_stockFragment_to_stockListFragment);
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(getActivity(), callback);
+
+        //Toolbar menu needs this to work
+        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+        setHasOptionsMenu(true);
+
         ((MaterialAutoCompleteTextView) textInputLayout.getEditText()).setOnItemClickListener(
                 (parent, view, position, id) ->
-                        stockViewModel.getSelectedCategory().setValue(stockViewModel.getCategories().getValue().get(position)));
+                        stockViewModel.getSelectedCategory()
+                                .setValue(stockViewModel.getCategories().getValue().get(position)));
         return containerView;
     }
 
     @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
         stockViewModel.getCategories().observe(getViewLifecycleOwner(), categories -> {
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, categories);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),
+                    android.R.layout.simple_spinner_dropdown_item, categories);
             ((MaterialAutoCompleteTextView) textInputLayout.getEditText()).setAdapter(adapter);
-            ((MaterialAutoCompleteTextView) textInputLayout.getEditText()).setText(adapter.getItem(0), false);
+            ((MaterialAutoCompleteTextView) textInputLayout.getEditText()).
+                    setText(adapter.getItem(0), false);
         });
 
         stockViewModel.getStockFileName().observe(getViewLifecycleOwner(), stockName -> {
@@ -132,16 +175,54 @@ public class StockFragment extends Fragment {
             TVAnswer.setText(Html.fromHtml(answer));
         });
 
-        stockViewModel.getTradingVolumesAndPriceChanges().observe(getViewLifecycleOwner(), tradingVolumeAndPriceChanges -> {
+        stockViewModel.getTradingVolumesAndPriceChanges().observe(getViewLifecycleOwner(),
+                tradingVolumeAndPriceChanges -> {
             ArrayAdapter arrayAdapter = new TradingVolumePriceChangeArrayAdapter(
                     getContext(), getActivity(), tradingVolumeAndPriceChanges);
             LVAnswer.setAdapter(arrayAdapter);
         });
 
-        stockViewModel.getOpeningPriceSMA5s().observe(getViewLifecycleOwner(), openingPriceSMA5s -> {
+        stockViewModel.getOpeningPriceSMA5s().observe(getViewLifecycleOwner(),
+                openingPriceSMA5s -> {
             ArrayAdapter arrayAdapter = new OpeningPriceSMA5ArrayAdapter(
                     getContext(), getActivity(), openingPriceSMA5s);
             LVAnswer.setAdapter(arrayAdapter);
         });
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_stock, menu);
+        super.onCreateOptionsMenu(menu,inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        if (menuItem.getItemId() == R.id.delete_file) {
+            MaterialAlertDialogBuilder dialogBuilder = createAlertDialogBuilder();
+            dialogBuilder.show();
+            return true;
+        } else if(menuItem.getItemId() == android.R.id.home){
+            Navigation.findNavController(containerView)
+                    .navigate(R.id.action_stockFragment_to_stockListFragment);
+            return true;
+        }
+        return false;
+    }
+
+    private MaterialAlertDialogBuilder createAlertDialogBuilder() {
+        return new MaterialAlertDialogBuilder(getContext())
+                .setTitle("Do you want to delete " + stockViewModel.getStockFileName().getValue() + "?")
+                .setPositiveButton("Delete", (dialogInterface, i) -> {
+                    boolean fileDeleted = stockViewModel.deleteFile();
+                    if(fileDeleted){
+                        Toast.makeText(getContext(), "File deleted!", Toast.LENGTH_LONG).show();
+                        Navigation.findNavController(containerView)
+                                .navigate(R.id.action_stockFragment_to_stockListFragment);
+                    } else {
+                        Toast.makeText(getContext(), "Failed to delete file!", Toast.LENGTH_LONG).show();
+                    }
+                }).setNegativeButton("CANCEL", (dialogInterface, i) -> {
+                });
     }
 }
