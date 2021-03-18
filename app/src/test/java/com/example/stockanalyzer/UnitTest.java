@@ -3,6 +3,7 @@ package com.example.stockanalyzer;
 import androidx.core.util.Pair;
 
 import com.example.stockanalyzer.exampledata.ExampleData;
+import com.example.stockanalyzer.filereader.StockCSVReader;
 import com.example.stockanalyzer.stock.LongestUpwardTrend;
 import com.example.stockanalyzer.stock.OpeningPriceSMA5;
 import com.example.stockanalyzer.stock.StockItem;
@@ -272,5 +273,24 @@ public class UnitTest {
                 .getTimeInMillis(), dateRange.first.getTimeInMillis());
         Assert.assertEquals((new GregorianCalendar(2021, 1, 23))
                 .getTimeInMillis(), dateRange.second.getTimeInMillis());
+    }
+
+    @Test
+    public void getStockStatistic_csvFile(){
+        String dataFormat = "Date, Close/Last, Volume, Open, High, Low";
+        String line = "01/19/2021, $127.83, 90757330, $127.78, $128.71, $126.938";
+        StockCSVReader stockCSVReader = new StockCSVReader();
+        StockStatistic stockStatistic = stockCSVReader.getStockStatistic(dataFormat, line);
+        Assert.assertEquals((new GregorianCalendar(2021,0,19)).getTimeInMillis(),
+                stockStatistic.date.getTimeInMillis());
+        Assert.assertEquals(127.83, stockStatistic.closePrice, 0);
+        Assert.assertEquals(90757330, stockStatistic.volume, 0);
+        Assert.assertEquals(127.78, stockStatistic.openPrice, 0);
+        Assert.assertEquals(128.71, stockStatistic.highPrice, 0);
+        Assert.assertEquals(126.938, stockStatistic.lowPrice, 0);
+
+        String unreadableLine = "01/19/2021, $127.83, text, $127.78, $128.71, $126.938";
+        stockStatistic = stockCSVReader.getStockStatistic(dataFormat, unreadableLine);
+        Assert.assertNull(stockStatistic);
     }
 }
