@@ -26,8 +26,8 @@ import java.util.List;
 public class StockArrayAdapter extends ArrayAdapter<StockItem> implements Filterable {
 
     public List<StockItem> stockItems;
-    private List<StockItem> stockItemsCopy;
-    private Activity activity;
+    private final List<StockItem> stockItemsCopy;
+    private final Activity activity;
 
     public StockArrayAdapter(Context context, Activity activity, List<StockItem> stockItems) {
         super(context, R.layout.item_stock, stockItems);
