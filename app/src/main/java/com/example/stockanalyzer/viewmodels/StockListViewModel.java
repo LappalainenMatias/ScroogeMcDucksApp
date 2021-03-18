@@ -34,7 +34,7 @@ public class StockListViewModel extends ViewModel {
     }
 
     private void loadStockItems() {
-        stockItems.setValue(stockRepository.getStockItems());
+        getStockItems().setValue(stockRepository.getStockItems());
     }
 
     /**
@@ -56,6 +56,8 @@ public class StockListViewModel extends ViewModel {
         if(getSelectedFileUri() == null || getSelectedFileUri().getValue() == null){
             return false;
         }
-        return stockRepository.saveFile(getSelectedFileUri().getValue(), fileName);
+        boolean fileSaved = stockRepository.saveFile(getSelectedFileUri().getValue(), fileName);
+        loadStockItems();
+        return fileSaved;
     }
 }
