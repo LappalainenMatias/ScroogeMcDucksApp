@@ -1,8 +1,10 @@
 package com.example.stockanalyzer.stock;
 
-import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+/**
+ * Contains historical data about a stock.
+ */
 public class StockStatistic {
     public GregorianCalendar date;
     public double closePrice;
