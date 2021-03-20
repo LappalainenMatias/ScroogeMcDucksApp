@@ -48,18 +48,24 @@ Add CSV files which contains stock data in a following way
 01/19/2021, $127.83, 90757330, $127.78, $128.71, $126.938”
 Sample data can be found from https://www.nasdaq.com/market-activity/stocks/aapl/historical.
 
-Analyze stock data by selecting an item from the list.
+Select a file
+![Alt text](/screenshots/selectfile.png "Select file")
 
-Select the category and and date range from which you would like to get infromation about.
+Name the data. 
+![Alt text](/screenshots/namefile.png "Name file")
+
+Analyze stock data by selecting an item from the list.
+![Alt text](/screenshots/filedownloaded.png "File downloaded")
+
+Select a category and date range to analyze data.
+![Alt text](/screenshots/category3.png "Category 3")
 
 Stock data can be deleted from the phone by pressing the trash can icon.
+![Alt text](/screenshots/deletefile.png "Delete file")
 
 ---
 
 
 ## Class diagram
 
-- Twitter - [@jamesqquick](https://twitter.com/jamesqquick)
-- Website - [James Q Quick](https://jamesqquick.com)
-
-[Back To The Top](#read-me-template)
+This is a simplified class diagram which shows the overall structure. The code itself is the main documentation. This project has followed Android Architecture guide https://developer.android.com/jetpack/guide.
