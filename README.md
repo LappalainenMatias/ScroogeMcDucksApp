@@ -40,27 +40,33 @@ and used for opening the application directly to Android phone. Minimun Android 
 #### Features
 
 When the app is lauched for the first time GameStop sample data is imported into the app. This data can be used for testing.
-<img src=/screenshots/start.png width="200">
+
+<img src=/screenshots/start.png width="300">
 
 Add CSV files which contains stock data in a following way
 “Date, Close/Last, Volume, Open, High, Low
 01/19/2021, $127.83, 90757330, $127.78, $128.71, $126.938”
 Sample data can be found from https://www.nasdaq.com/market-activity/stocks/aapl/historical.
 
-Select a file
-<img src=/screenshots/selectfile.png width="200">
+Select a file.
+
+<img src=/screenshots/selectfile.png width="300">
 
 Name the data.
-<img src=/screenshots/namefile.png width="200">
+
+<img src=/screenshots/namefile.png width="300">
 
 Analyze stock data by selecting an item from the list.
-<img src=/screenshots/filedownloaded.png width="200">
+
+<img src=/screenshots/filedownloaded.png width="300">
 
 Select a category and date range to analyze data.
-<img src=/screenshots/category3.png width="200">
+
+<img src=/screenshots/category3.png width="300">
 
 Stock data can be deleted from the phone by pressing the trash can icon.
-<img src=/screenshots/deletefile.png width="200">
+
+<img src=/screenshots/deletefile.png width="300">
 
 ---
 
