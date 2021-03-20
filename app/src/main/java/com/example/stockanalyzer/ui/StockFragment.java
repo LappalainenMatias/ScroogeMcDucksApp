@@ -4,7 +4,6 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.Html;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
@@ -115,26 +115,12 @@ public class StockFragment extends Fragment {
                 stockViewModel.getDateRange().getValue().second.get(Calendar.MONTH),
                 stockViewModel.getDateRange().getValue().second.get(Calendar.DAY_OF_MONTH)).show());
 
-        toolbar.setNavigationOnClickListener(v -> {
-            Navigation.findNavController(v).navigate(R.id.action_stockFragment_to_stockListFragment);
-        });
-
-        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                Navigation.findNavController(containerView)
-                        .navigate(R.id.action_stockFragment_to_stockListFragment);
-            }
-        };
-        requireActivity().getOnBackPressedDispatcher().addCallback(getActivity(), callback);
-
         //Toolbar menu needs this to work
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
         setHasOptionsMenu(true);
 
         ((MaterialAutoCompleteTextView) textInputLayout.getEditText()).setOnItemClickListener(
-                (parent, view, position, id) ->
-                        stockViewModel.getSelectedCategory()
+                (parent, view, position, id) -> stockViewModel.getSelectedCategory()
                                 .setValue(stockViewModel.getCategories().getValue().get(position)));
         return containerView;
     }
@@ -203,8 +189,7 @@ public class StockFragment extends Fragment {
             dialogBuilder.show();
             return true;
         } else if(menuItem.getItemId() == android.R.id.home){
-            Navigation.findNavController(containerView)
-                    .navigate(R.id.action_stockFragment_to_stockListFragment);
+            Navigation.findNavController(containerView).navigateUp();
             return true;
         }
         return false;
@@ -217,10 +202,9 @@ public class StockFragment extends Fragment {
                     boolean fileDeleted = stockViewModel.deleteFile();
                     if(fileDeleted){
                         Toast.makeText(getContext(), "File deleted!", Toast.LENGTH_LONG).show();
-                        Navigation.findNavController(containerView)
-                                .navigate(R.id.action_stockFragment_to_stockListFragment);
+                        Navigation.findNavController(containerView).navigateUp();
                     } else {
-                        Toast.makeText(getContext(), "Failed to delete file!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), "Failed to delete the file!", Toast.LENGTH_LONG).show();
                     }
                 }).setNegativeButton("CANCEL", (dialogInterface, i) -> {
                 });
