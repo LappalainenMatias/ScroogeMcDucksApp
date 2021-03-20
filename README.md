@@ -27,8 +27,6 @@ simple moving average (SMA 5)?
 - Hilt
 - Android Jetpack LiveData and ViewModels
 
-[Back To The Top](#read-me-template)
-
 ---
 
 ## How To Use
@@ -41,11 +39,12 @@ and used for opening the application directly to Android phone. Minumun Android 
 
 #### Features
 
+When the app is lauched for the first time GameStop sample data is imported into the app. This data can be used for testing.
+
 Add CSV files which contains stock data in a following way
 “Date, Close/Last, Volume, Open, High, Low
 01/19/2021, $127.83, 90757330, $127.78, $128.71, $126.938”
 Sample data can be found from https://www.nasdaq.com/market-activity/stocks/aapl/historical.
-When the app is lauched for the first time GameStop sample data is imported into the app. This data can be used for testing.
 
 Analyze stock data by selecting an item from the list.
 
