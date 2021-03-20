@@ -42,6 +42,7 @@ When the application is launched for the first time, GameStop sample data is imp
 To import data into the application, add .CSV files which contain stock data in a following format:
 
 Date, Close/Last, Volume, Open, High, Low
+
 01/19/2021, $127.83, 90757330, $127.78, $128.71, $126.938
 
 Data can be downloaded at https://www.nasdaq.com/market-activity/stocks/aapl/historical.
