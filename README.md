@@ -35,13 +35,13 @@ simple moving average (SMA 5)?
 
 This project has been created using Android studio. To install the project into phone clone the project and open
 the project inside Android studio. This repository also contains .apk (Android package file) which can be downloaded into phone 
-and used for opening the application directly to Android phone. Minumun Android version is Android 5.0.
+and used for opening the application directly to Android phone. Minimun Android version is Android 5.0.
 
 #### Features
 
 When the app is lauched for the first time GameStop sample data is imported into the app. This data can be used for testing.
 
-![Alt text](/screenshots/start.png "Starting screen")
+![Alt text](/screenshots/start.png "Starting screen" | width=100)
 
 Add CSV files which contains stock data in a following way
 “Date, Close/Last, Volume, Open, High, Low
@@ -49,19 +49,19 @@ Add CSV files which contains stock data in a following way
 Sample data can be found from https://www.nasdaq.com/market-activity/stocks/aapl/historical.
 
 Select a file
-![Alt text](/screenshots/selectfile.png "Select file")
+![Alt text](/screenshots/selectfile.png "Select file" | width=100)
 
 Name the data. 
-![Alt text](/screenshots/namefile.png "Name file")
+![Alt text](/screenshots/namefile.png "Name file" | width=100)
 
 Analyze stock data by selecting an item from the list.
-![Alt text](/screenshots/filedownloaded.png "File downloaded")
+![Alt text](/screenshots/filedownloaded.png "File downloaded" | width=100)
 
 Select a category and date range to analyze data.
-![Alt text](/screenshots/category3.png "Category 3")
+![Alt text](/screenshots/category3.png "Category 3" | width=100)
 
 Stock data can be deleted from the phone by pressing the trash can icon.
-![Alt text](/screenshots/deletefile.png "Delete file")
+![Alt text](/screenshots/deletefile.png "Delete file" | width=100)
 
 ---
 
