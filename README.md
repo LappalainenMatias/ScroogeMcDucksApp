@@ -1,31 +1,31 @@
-# ScroogeMcDucksApp
-# Read Me Template
-
-![Project Image](project-image-url)
-
-> This is a ReadMe template to help save you time and effort.
+# Scrooge McDucks App
 
 ---
 
 ### Table of Contents
-You're sections headers will be used to reference location of destination.
 
 - [Description](#description)
 - [How To Use](#how-to-use)
-- [References](#references)
-- [License](#license)
-- [Author Info](#author-info)
+- [Class diagram](#class-diagram)
 
 ---
 
 ## Description
 
-Creating ReadMe's for your Github repository can be tedious.  I hope this template can save you time and effort as well as provide you with some consistency across your projects.
+Android application which analyzes stock data. User can import stock data in a CSV file and find answers to following questions.
+- How many days was the longest bullish (upward) trend within a given date range?
+- Which dates within a given date range had a) the highest trading volume and b) the most 
+significant stock price change within a day?
+- Within a given date range, which dates had the best opening price compared to 5 days 
+simple moving average (SMA 5)?
 
+ 
 #### Technologies
 
-- Technology 1
-- Technology 2
+- Android studio
+- Java
+- Hilt
+- Android Jetpack LiveData and ViewModels
 
 [Back To The Top](#read-me-template)
 
@@ -35,51 +35,28 @@ Creating ReadMe's for your Github repository can be tedious.  I hope this templa
 
 #### Installation
 
+This project has been created using Android studio. To install the project into phone clone the project and open
+the project inside Android studio. This repository also contains .apk (Android package file) which can be downloaded into phone 
+and used for opening the application directly to Android phone. Minumun Android version is Android 5.0.
 
+#### Features
 
-#### API Reference
+Add CSV files which contains stock data in a following way
+“Date, Close/Last, Volume, Open, High, Low
+01/19/2021, $127.83, 90757330, $127.78, $128.71, $126.938”
+Sample data can be found from https://www.nasdaq.com/market-activity/stocks/aapl/historical.
+When the app is lauched for the first time GameStop sample data is imported into the app. This data can be used for testing.
 
-```html
-    <p>dummy code</p>
-```
-[Back To The Top](#read-me-template)
+Analyze stock data by selecting an item from the list.
 
----
+Select the category and and date range from which you would like to get infromation about.
 
-## References
-[Back To The Top](#read-me-template)
-
----
-
-## License
-
-MIT License
-
-Copyright (c) [2017] [James Q Quick]
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-[Back To The Top](#read-me-template)
+Stock data can be deleted from the phone by pressing the trash can icon.
 
 ---
 
-## Author Info
+
+## Class diagram
 
 - Twitter - [@jamesqquick](https://twitter.com/jamesqquick)
 - Website - [James Q Quick](https://jamesqquick.com)
