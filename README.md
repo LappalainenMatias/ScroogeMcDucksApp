@@ -41,6 +41,8 @@ and used for opening the application directly to Android phone. Minumun Android 
 
 When the app is lauched for the first time GameStop sample data is imported into the app. This data can be used for testing.
 
+![Alt text](\screenshots\start.png "Starting screen")
+
 Add CSV files which contains stock data in a following way
 “Date, Close/Last, Volume, Open, High, Low
 01/19/2021, $127.83, 90757330, $127.78, $128.71, $126.938”
