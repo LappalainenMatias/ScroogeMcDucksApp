@@ -3,11 +3,7 @@ package com.example.stockanalyzer.stock;
 
 import androidx.core.util.Pair;
 
-import com.example.stockanalyzer.R;
-
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.GregorianCalendar;
@@ -23,6 +19,8 @@ public class StockItemAnalyzer {
     }
 
     /**
+     * Upward trend means that closing price of day N is higher than closing
+     * price of day N-1
      * @return If date range does not contain upward trend return LongestUpwardTrend(0, null, null)
      */
     public LongestUpwardTrend getLongestUpwardTrend(
@@ -80,7 +78,7 @@ public class StockItemAnalyzer {
             return new ArrayList<>();
         }
         ArrayList<TradingVolumeAndPriceChange> tradingVolumeAndPriceChanges = createTradingVolumeAndPriceChanges(cutStatistics);
-        Collections.sort(tradingVolumeAndPriceChanges, new VolumeAndPriceChangeCompator());
+        Collections.sort(tradingVolumeAndPriceChanges, new VolumeAndPriceChangeComparator());
         return tradingVolumeAndPriceChanges;
     }
 
@@ -128,7 +126,7 @@ public class StockItemAnalyzer {
     }
 
     /**
-     * If stockstatistic date is not rangeStart or rangeEnd or between rangeStart and rangeEnd then stockStatistic is cut
+     * If stockStatistic date is not rangeStart or rangeEnd or between rangeStart and rangeEnd then stockStatistic is cut
      * off from list.
      */
     private List<StockStatistic> cut(List<StockStatistic> stockStatistics, GregorianCalendar rangeStart,
@@ -142,8 +140,6 @@ public class StockItemAnalyzer {
         }
         return cutted;
     }
-
-    // TODO: 19.2.2021 Refactor dates to calendar
 
     /**
      * Start and end of the range are part of the range. This means that
@@ -169,7 +165,7 @@ public class StockItemAnalyzer {
         }
     }
 
-    private static class VolumeAndPriceChangeCompator implements Comparator<TradingVolumeAndPriceChange> {
+    private static class VolumeAndPriceChangeComparator implements Comparator<TradingVolumeAndPriceChange> {
         @Override
         public int compare(TradingVolumeAndPriceChange o1, TradingVolumeAndPriceChange o2) {
             if (o1.tradingVolume < o2.tradingVolume) {
