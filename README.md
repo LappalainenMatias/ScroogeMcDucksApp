@@ -74,7 +74,7 @@ Stock data can be deleted from the phone by pressing the trash can icon.
 
 This is a simplified class diagram which shows the overall structure. The code itself is the main documentation. This project has followed the Android Architecture guide https://developer.android.com/jetpack/guide.
 
-<img src=/screenshots/deletefile.png width="500">
+<img src=/screenshots/diagram.png width="600">
 
 This application uses a single Activity which is populated by StockListFragment and StockFragment.
 Fragments are used for updating the UI. ViewModels are used for managing the data the fragments show.
