@@ -2,11 +2,14 @@ package com.example.stockanalyzer.repository;
 
 import android.net.Uri;
 
+import androidx.lifecycle.MutableLiveData;
+
 import com.example.stockanalyzer.stock.StockItem;
 import com.example.stockanalyzer.storage.StockStorageHandler;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
