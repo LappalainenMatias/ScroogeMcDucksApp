@@ -33,12 +33,8 @@ public class StockListViewModel extends ViewModel {
         return stockItems;
     }
 
-    private void loadStockItems() {
-        getStockItems().setValue(stockRepository.getStockItems());
-    }
-
     /**
-     * Uri for the file user is saving to the internal storage.
+     * Uri for the file the user is saving into the internal storage.
      * Null if no file has been selected
      */
     public MutableLiveData<Uri> getSelectedFileUri() {
@@ -50,14 +46,18 @@ public class StockListViewModel extends ViewModel {
 
     /**
      * @param fileName this is also the name for the stock which is shown to the user
-     * @return true if file was saved successfully
+     * @return true if the file was saved successfully
      */
     public boolean saveStockDataFile(String fileName) {
-        if(getSelectedFileUri() == null || getSelectedFileUri().getValue() == null){
+        if(getSelectedFileUri().getValue() == null){
             return false;
         }
         boolean fileSaved = stockRepository.saveFile(getSelectedFileUri().getValue(), fileName);
         loadStockItems();
         return fileSaved;
+    }
+
+    public void loadStockItems() {
+        getStockItems().setValue(stockRepository.getStockItems());
     }
 }
