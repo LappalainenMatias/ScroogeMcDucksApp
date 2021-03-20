@@ -72,4 +72,16 @@ Stock data can be deleted from the phone by pressing the trash can icon.
 
 ## Class diagram
 
-This is a simplified class diagram which shows the overall structure. The code itself is the main documentation. This project has followed Android Architecture guide https://developer.android.com/jetpack/guide.
+This is a simplified class diagram which shows the overall structure. The code itself is the main documentation. This project has followed the Android Architecture guide https://developer.android.com/jetpack/guide.
+
+<img src=/screenshots/deletefile.png width="500">
+
+This application uses a single Activity which is populated by StockListFragment and StockFragment.
+Fragments are used for updating the UI. ViewModels are used for managing the data the fragments show.
+StockRepository is used for separating the data source from the ViewModels. StockStorageHandler is used for 
+to save, delete and download stock data from internal storage. StockFileReader is used for reading stock 
+data from file. StockItem contains the filename (which is the stock items name and a file name in internal storage) 
+and StockStatistics which contains stock data (date, open price, volume...). StockItemAnalyzer analyses the data the StockItem 
+contains and answers the questions which are writen in Description. The program also contains some other classes for example
+ArrayAdapters which are used for to populate lists and some smaller classes which are used for to capsulate data.
+
