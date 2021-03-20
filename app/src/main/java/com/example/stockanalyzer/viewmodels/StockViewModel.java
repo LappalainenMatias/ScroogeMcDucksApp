@@ -1,7 +1,8 @@
 package com.example.stockanalyzer.viewmodels;
 
-import android.util.Pair;
 
+
+import androidx.core.util.Pair;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 public class StockViewModel extends ViewModel {
 
@@ -35,14 +37,16 @@ public class StockViewModel extends ViewModel {
     public StockViewModel(String stockFileName, StockRepository stockRepository) {
         this.stockFileName = new MutableLiveData<>(stockFileName);
         this.stockRepository = stockRepository;
-        stockItemAnalyzer = new StockItemAnalyzer(getStockItem().getValue());
+        if (getStockItem().getValue() != null) {
+            stockItemAnalyzer = new StockItemAnalyzer(getStockItem().getValue());
+        }
     }
 
     public MutableLiveData<Pair<GregorianCalendar, GregorianCalendar>> getDateRange() {
         if (dateRange == null) {
             dateRange = new MutableLiveData<>(new Pair<>(
-                    new GregorianCalendar(2021,0, 1),
-                    new GregorianCalendar(2021,1, 1)));
+                    new GregorianCalendar(2021, 0, 1),
+                    new GregorianCalendar(2021, 1, 1)));
             loadDateRange();
         }
         return dateRange;
@@ -112,13 +116,15 @@ public class StockViewModel extends ViewModel {
     /**
      * @return True if file was deleted
      */
-    public boolean deleteFile(){
+    public boolean deleteFile() {
         return stockRepository.deleteFile(getStockFileName().getValue());
     }
 
     public void analyze() {
-        if(getStockItem().getValue() == null){
+        if (getStockItem().getValue() == null ||
+                getStockItem().getValue().stockStatisticByCalendar == null) {
             getAnswer().setValue("Something went wrong and data could not be read!");
+            return;
         }
         switch (getSelectedCategory().getValue()) {
             // TODO: 25/02/2021 Use R.string instead of fixed value.
@@ -143,39 +149,41 @@ public class StockViewModel extends ViewModel {
     }
 
     private void loadDateRange() {
-        GregorianCalendar earliest = null;
-        GregorianCalendar latest = null;
-        for (GregorianCalendar gregorianCalendar : getStockItem().getValue().stockStatisticByCalendar.keySet()) {
-            if (earliest == null || earliest.getTimeInMillis() > gregorianCalendar.getTimeInMillis()) {
-                earliest = gregorianCalendar;
-            }
-            if (latest == null || latest.getTimeInMillis() < gregorianCalendar.getTimeInMillis()) {
-                latest = gregorianCalendar;
-            }
-        }
-        if(earliest == null || latest == null){
+        if (getStockItem().getValue() == null) {
             return;
         }
-        dateRange.setValue(new Pair<>(earliest, latest));
+        if (getStockItem().getValue().stockStatisticByCalendar == null) {
+            return;
+        }
+
+        Pair<GregorianCalendar, GregorianCalendar> range = stockItemAnalyzer.getStocksDateRange();
+
+        if (range.first == null || range.second  == null) {
+            return;
+        }
+        dateRange.setValue(new Pair<>(range.first, range.second));
     }
 
     // TODO: 25/02/2021 Create this so that it supports multiple languages
     private void analyze_longestUpwardTrend() {
-        LongestUpwardTrend longestUpwardTrend =
-                stockItemAnalyzer.getLongestUpwardTrend(getDateRange().getValue().first, getDateRange().getValue().second);
-        int length = longestUpwardTrend.length;
+        LongestUpwardTrend longestUpwardTrend = stockItemAnalyzer.getLongestUpwardTrend(
+                        getDateRange().getValue().first, getDateRange().getValue().second);
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
 
-        if (length < 2) {
-            androidx.core.util.Pair<GregorianCalendar, GregorianCalendar> dateRange = stockItemAnalyzer.getStocksDateRange();
-            getAnswer().setValue("Date range did not contain upward trend. " + getStockFileName().getValue()
+        if (longestUpwardTrend.length < 2) {
+            androidx.core.util.Pair<GregorianCalendar, GregorianCalendar>
+                    dateRange = stockItemAnalyzer.getStocksDateRange();
+            getAnswer().setValue("Date range did not contain upward trend. "
+                    + getStockFileName().getValue()
                     + " stock data starts <b>" + sdf.format(dateRange.first.getTime())
                     + "</b> and ends <b>" + sdf.format(dateRange.second.getTime()) + "</b>.");
         } else {
             GregorianCalendar start = longestUpwardTrend.start;
             GregorianCalendar end = longestUpwardTrend.end;
-            getAnswer().setValue("In " + getStockFileName().getValue() + " stock historical data the Close/Last price increased <b>"
-                    + length + "</b> days in a row between <b>" + sdf.format(start.getTime())
+            getAnswer().setValue("In " + getStockFileName().getValue()
+                    + " stock historical data the Close/Last price increased <b>"
+                    + longestUpwardTrend.length + "</b> days in a row between <b>"
+                    + sdf.format(start.getTime())
                     + "</b> and <b>" + sdf.format(end.getTime()) + "</b>.");
         }
         getTradingVolumesAndPriceChanges().setValue(new ArrayList<>());//Hides list view
@@ -189,8 +197,10 @@ public class StockViewModel extends ViewModel {
 
         if (tradingVolumeAndPriceChanges.size() < 1) {
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
-            androidx.core.util.Pair<GregorianCalendar, GregorianCalendar> dateRange = stockItemAnalyzer.getStocksDateRange();
-            getAnswer().setValue("Date range did not contain enough data. " + getStockFileName().getValue()
+            androidx.core.util.Pair<GregorianCalendar, GregorianCalendar>
+                    dateRange = stockItemAnalyzer.getStocksDateRange();
+            getAnswer().setValue("Date range did not contain enough data. "
+                    + getStockFileName().getValue()
                     + " stock data starts <b>" + sdf.format(dateRange.first.getTime())
                     + "</b> and ends <b>" + sdf.format(dateRange.second.getTime()) + "</b>.");
         } else {
@@ -205,8 +215,10 @@ public class StockViewModel extends ViewModel {
 
         if (openingPriceSMA5s.size() < 1) {
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
-            androidx.core.util.Pair<GregorianCalendar, GregorianCalendar> dateRange = stockItemAnalyzer.getStocksDateRange();
-            getAnswer().setValue("Date range did not contain enough data. " + getStockFileName().getValue()
+            androidx.core.util.Pair<GregorianCalendar, GregorianCalendar>
+                    dateRange = stockItemAnalyzer.getStocksDateRange();
+            getAnswer().setValue("Date range did not contain enough data. "
+                    + getStockFileName().getValue()
                     + " stock data starts <b>" + sdf.format(dateRange.first.getTime())
                     + "</b> and ends <b>" + sdf.format(dateRange.second.getTime()) + "</b>.");
         } else {
