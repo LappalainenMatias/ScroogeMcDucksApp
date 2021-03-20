@@ -76,9 +76,11 @@ public class StockListFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        viewContainer = inflater.inflate(R.layout.stocklist_fragment, container, false);
+        //StockItems are loaded to make sure that StockItems have not been deleted
+        //or changed between fragment changes
+        stockListViewModel.loadStockItems();
 
-        // TODO: 10.3.2021 Refactor. Rename views
+        viewContainer = inflater.inflate(R.layout.stocklist_fragment, container, false);
         searchView = viewContainer.findViewById(R.id.action_search);
         LVStocks = viewContainer.findViewById(R.id.LVStocks);
         FloatingActionButton FABAdd = viewContainer.findViewById(R.id.FABAdd);
@@ -126,13 +128,12 @@ public class StockListFragment extends Fragment {
         return viewContainer;
     }
 
-    // TODO: 13.3.2021 Rotation cases exception
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         intentGetContent = new Intent(Intent.ACTION_GET_CONTENT);
-        intentGetContent.setDataAndType(Uri.parse("/downloads"), "text/csv");
+        intentGetContent.setDataAndType(Uri.parse("/downloads"), "*/*");
 
         getContentLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                 result -> {
