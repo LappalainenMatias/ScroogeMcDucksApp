@@ -40,8 +40,7 @@ and used for opening the application directly to Android phone. Minimun Android 
 #### Features
 
 When the app is lauched for the first time GameStop sample data is imported into the app. This data can be used for testing.
-
-![Alt text](/screenshots/start.png "Starting screen" | width=100)
+<img src=/screenshots/start.png width="100">
 
 Add CSV files which contains stock data in a following way
 “Date, Close/Last, Volume, Open, High, Low
