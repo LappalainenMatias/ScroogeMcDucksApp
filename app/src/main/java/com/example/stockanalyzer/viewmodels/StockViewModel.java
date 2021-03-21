@@ -22,6 +22,10 @@ import java.util.Set;
 
 public class StockViewModel extends ViewModel {
 
+    private final String category1 = "Longest upward trend";
+    private final String category2 = "Highest trading volume and the most significant stock price change";
+    private final String category3 = "Best opening price compared to 5 day moving average";
+
     MutableLiveData<Pair<GregorianCalendar, GregorianCalendar>> dateRange;
     MutableLiveData<String> stockFileName;
     MutableLiveData<List<String>> categories;
@@ -63,12 +67,18 @@ public class StockViewModel extends ViewModel {
         if (openingPriceSMA5s == null) {
             openingPriceSMA5s = new MutableLiveData<>();
         }
+        if(!getSelectedCategory().getValue().equals(category3)){
+            openingPriceSMA5s.setValue(null);
+        }
         return openingPriceSMA5s;
     }
 
     public MutableLiveData<List<TradingVolumeAndPriceChange>> getTradingVolumesAndPriceChanges() {
         if (tradingVolumesAndPriceChanges == null) {
             tradingVolumesAndPriceChanges = new MutableLiveData<>();
+        }
+        if(!getSelectedCategory().getValue().equals(category2)){
+            tradingVolumesAndPriceChanges.setValue(null);
         }
         return tradingVolumesAndPriceChanges;
     }
@@ -91,9 +101,9 @@ public class StockViewModel extends ViewModel {
 
     private void loadCategories() {
         List<String> items = new ArrayList<>();
-        items.add("Longest upward trend");
-        items.add("Highest trading volume and the most significant stock price change");
-        items.add("Best opening price compared to 5 day moving average");
+        items.add(category1);
+        items.add(category2);
+        items.add(category3);
         categories.setValue(items);
     }
 
@@ -127,14 +137,13 @@ public class StockViewModel extends ViewModel {
             return;
         }
         switch (getSelectedCategory().getValue()) {
-            // TODO: 25/02/2021 Use R.string instead of fixed value.
-            case "Longest upward trend":
+            case category1:
                 analyze_longestUpwardTrend();
                 break;
-            case "Highest trading volume and the most significant stock price change":
+            case category2:
                 analyze_highestTradingVolumeAnsMostSignificantStockChange();
                 break;
-            case "Best opening price compared to 5 day moving average":
+            case category3:
                 analyze_openingPriceComparedToSMA5();
                 break;
         }
@@ -145,7 +154,7 @@ public class StockViewModel extends ViewModel {
     }
 
     private void loadSelectedCategory() {
-        selectedCategory = new MutableLiveData<>("Longest upward trend");
+        selectedCategory = new MutableLiveData<>(category1);
     }
 
     private void loadDateRange() {
