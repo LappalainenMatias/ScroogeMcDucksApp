@@ -1,17 +1,3 @@
 <resources>
     <string name="app_name">StockAnalyzer</string>
-    <string name="searchHint">Search...</string>
-    <string name="menu">Menu</string>
-    <string name="search">Search</string>
-    <string name="stocks_name">Stocks name</string>
-    <string name="day_month_year_day_month_year">Day/Month/Year - Day/Month/Year</string>
-    <string name="categories_1">Longest upward trend</string>
-    <string name="categories_2">Highest trading volume and the most significant stock price change</string>
-    <string name="categories_3">Best opening price compared to 5 day moving average</string>
-    <string name="end_date">End date</string>
-    <string name="start_date">Start date</string>
-    <string name="category">Category</string>
-    <string name="stock_data_from">"Stock data from "</string>
-    <string name="stock_data_was_not_found">Stock data was not found</string>
-    <string name="_to_">" to "</string>
 </resources>
