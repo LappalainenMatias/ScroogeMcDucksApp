@@ -140,17 +140,17 @@ public class UnitTest {
         Assert.assertEquals(new GregorianCalendar(2010, 0, 1).getTimeInMillis(),
                 first.gregorianCalendar.getTimeInMillis());
         Assert.assertEquals(20000, first.tradingVolume, 0.001);
-        Assert.assertEquals(0.13, first.priceChange, 0.001);
+        Assert.assertEquals(2.8, first.priceChange, 0.001);
 
         Assert.assertEquals(new GregorianCalendar(2010, 0, 4).getTimeInMillis(),
                 second.gregorianCalendar.getTimeInMillis());
         Assert.assertEquals(20000, second.tradingVolume, 0.001);
-        Assert.assertEquals(0.09, second.priceChange, 0.001);
+        Assert.assertEquals(2.1, second.priceChange, 0.001);
 
         Assert.assertEquals(new GregorianCalendar(2010, 0, 5).getTimeInMillis(),
                 last.gregorianCalendar.getTimeInMillis());
         Assert.assertEquals(5000, last.tradingVolume, 0.001);
-        Assert.assertEquals(0.01, last.priceChange, 0.001);
+        Assert.assertEquals(2.7, last.priceChange, 0.001);
     }
 
     @Test
@@ -170,17 +170,17 @@ public class UnitTest {
         Assert.assertEquals(new GregorianCalendar(2021, 1, 16).getTimeInMillis(),
                 first.gregorianCalendar.getTimeInMillis());
         Assert.assertEquals(21000, first.tradingVolume, 0.001);
-        Assert.assertEquals(0.02, first.priceChange, 0.001);
+        Assert.assertEquals(2.1, first.priceChange, 0.001);
 
         Assert.assertEquals(new GregorianCalendar(2021, 1, 14).getTimeInMillis(),
                 second.gregorianCalendar.getTimeInMillis());
         Assert.assertEquals(18000, second.tradingVolume, 0.001);
-        Assert.assertEquals(2.9, second.priceChange, 0.001);
+        Assert.assertEquals(3.1, second.priceChange, 0.001);
 
-        Assert.assertEquals(new GregorianCalendar(2021, 1, 23).getTimeInMillis(),
+        Assert.assertEquals(new GregorianCalendar(2021, 1, 15).getTimeInMillis(),
                 last.gregorianCalendar.getTimeInMillis());
         Assert.assertEquals(1000, last.tradingVolume, 0.001);
-        Assert.assertEquals(0.2, last.priceChange, 0.001);
+        Assert.assertEquals(2.5, last.priceChange, 0.001);
     }
 
     @Test
