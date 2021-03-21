@@ -39,15 +39,13 @@ When the application is launched for the first time, GameStop sample data is imp
 
 <img src=/screenshots/start.png width="300">
 
-To import data into the application, add .CSV files which contain stock data in a following format:
+To import data into the application, click the add button and select .CSV file which contain stock data in a following format:
 
 Date, Close/Last, Volume, Open, High, Low
 
 01/19/2021, $127.83, 90757330, $127.78, $128.71, $126.938
 
 Data can be downloaded at https://www.nasdaq.com/market-activity/stocks/aapl/historical.
-
-Select a file.
 
 <img src=/screenshots/selectfile.png width="300">
 
@@ -63,7 +61,7 @@ Select a category and date range to analyze data.
 
 <img src=/screenshots/category3.png width="300">
 
-Stock data can be deleted from the phone by pressing the trash can icon.
+Stock data can be deleted from the device by pressing the trash can icon.
 
 <img src=/screenshots/deletefile.png width="300">
 
@@ -75,5 +73,13 @@ This is a simplified class diagram which shows the overall structure. The code i
 
 <img src=/screenshots/diagram.png width="600">
 
-This application uses a single Activity which is populated by StockListFragment and StockFragment. Fragments are used for updating the UI. ViewModels are used for managing the data the fragments show. StockRepository is used for separating the data source from the ViewModels. StockStorageHandler is used to save, delete and download stock data from internal storage. StockFileReader is used for reading stock data from file. StockItem contains the filename (which is the StockItem's name and a file name in internal storage) and StockStatistics which contain stock data (date, open price, volume...). StockItemAnalyzer analyses the data the StockItem contain and answers the questions which are written in the Description. The program also contain some other classes, for example ArrayAdapters which are used for to populate ListViews and some smaller classes which are used for to capsulate data.
+This application uses a single Activity which is populated by StockListFragment and StockFragment. Classes have following jobs:
+- Fragments update the UI. 
+- ViewModels manage the data the fragments show. 
+- StockRepositor separates the data source from the ViewModels. 
+- StockStorageHandler saves, deletes and downloads stock data from internal storage. 
+- StockFileReader reads stock data from a file. 
+- StockItem contains the filename (which is the StockItem's name and a file name in internal storage) and StockStatistics which contain stock data (date, open price, volume...). 
+- StockItemAnalyzer analyses the data the StockItem contain and answers the questions which are written in the Description. 
+The project also has some other classes, for example ArrayAdapters which are used for to populate ListViews and some smaller classes which are used for to capsulate data. The project also has unit tests, which test that StockItemAnalyzer returns correct answers.
 
