@@ -13,6 +13,7 @@
         android:id="@+id/view"
         android:layout_width="match_parent"
         android:layout_height="5dp"
+        android:elevation="3dp"
         android:background="@drawable/toolbar_dropshadow"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -47,6 +48,7 @@
         style="@style/AppTheme" />
 
     <ListView
+        android:drawSelectorOnTop="true"
         android:id="@+id/LVStocks"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -55,7 +57,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view"
+        app:layout_constraintTop_toBottomOf="@+id/StockToolbar"
         tools:listitem="@layout/item_stock" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
