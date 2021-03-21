@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -58,6 +59,7 @@ public class StockFragment extends Fragment {
     private TextInputEditText EDDateRangeStart;
     private TextInputEditText EDDateRangeEnd;
     private TextInputLayout textInputLayout;
+    private AutoCompleteTextView TVCategory;
     private TextView TVAnswer;
     private Toolbar toolbar;
     private ListView LVAnswer;
@@ -66,9 +68,11 @@ public class StockFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getActivity() != null) {
-            viewModelFactory.setFileName(getArguments().getString("stockFileName", ""));
-            stockViewModel = viewModelFactory.create(StockViewModel.class);
+        if (getActivity() != null && stockViewModel == null) {
+            viewModelFactory.setFileName(getArguments()
+                    .getString("stockFileName", ""));
+            stockViewModel = new ViewModelProvider(this, viewModelFactory)
+                    .get(StockViewModel.class);
         }
     }
 
@@ -78,6 +82,7 @@ public class StockFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         containerView = inflater.inflate(R.layout.stock_fragment, container, false);
         textInputLayout = containerView.findViewById(R.id.textInputLayout);
+        TVCategory = containerView.findViewById(R.id.category);
         EDDateRangeStart = containerView.findViewById(R.id.EDDateRangeStart);
         EDDateRangeEnd = containerView.findViewById(R.id.EDDateRangeEnd);
         TVAnswer = containerView.findViewById(R.id.TVAnswer);
@@ -116,12 +121,12 @@ public class StockFragment extends Fragment {
                 stockViewModel.getDateRange().getValue().second.get(Calendar.DAY_OF_MONTH)).show());
 
         //Toolbar menu needs this to work
-        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         setHasOptionsMenu(true);
 
         ((MaterialAutoCompleteTextView) textInputLayout.getEditText()).setOnItemClickListener(
                 (parent, view, position, id) -> stockViewModel.getSelectedCategory()
-                                .setValue(stockViewModel.getCategories().getValue().get(position)));
+                        .setValue(stockViewModel.getCategories().getValue().get(position)));
         return containerView;
     }
 
@@ -132,9 +137,10 @@ public class StockFragment extends Fragment {
         stockViewModel.getCategories().observe(getViewLifecycleOwner(), categories -> {
             ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),
                     android.R.layout.simple_spinner_dropdown_item, categories);
-            ((MaterialAutoCompleteTextView) textInputLayout.getEditText()).setAdapter(adapter);
-            ((MaterialAutoCompleteTextView) textInputLayout.getEditText()).
-                    setText(adapter.getItem(0), false);
+            ((MaterialAutoCompleteTextView) textInputLayout.getEditText())
+                    .setAdapter(adapter);
+            ((MaterialAutoCompleteTextView) textInputLayout.getEditText())
+                    .setText(stockViewModel.getSelectedCategory().getValue(), false);
         });
 
         stockViewModel.getStockFileName().observe(getViewLifecycleOwner(), stockName -> {
@@ -153,7 +159,7 @@ public class StockFragment extends Fragment {
         });
 
         stockViewModel.getAnswer().observe(getViewLifecycleOwner(), answer -> {
-            if(answer.length() == 0){
+            if (answer.length() == 0) {
                 TVAnswer.setVisibility(View.GONE);
             } else {
                 TVAnswer.setVisibility(View.VISIBLE);
@@ -163,23 +169,27 @@ public class StockFragment extends Fragment {
 
         stockViewModel.getTradingVolumesAndPriceChanges().observe(getViewLifecycleOwner(),
                 tradingVolumeAndPriceChanges -> {
-            ArrayAdapter arrayAdapter = new TradingVolumePriceChangeArrayAdapter(
-                    getContext(), getActivity(), tradingVolumeAndPriceChanges);
-            LVAnswer.setAdapter(arrayAdapter);
-        });
+                    if (tradingVolumeAndPriceChanges != null) {
+                        ArrayAdapter adapter = new TradingVolumePriceChangeArrayAdapter(
+                                getContext(), getActivity(), tradingVolumeAndPriceChanges);
+                        LVAnswer.setAdapter(adapter);
+                    }
+                });
 
         stockViewModel.getOpeningPriceSMA5s().observe(getViewLifecycleOwner(),
                 openingPriceSMA5s -> {
-            ArrayAdapter arrayAdapter = new OpeningPriceSMA5ArrayAdapter(
-                    getContext(), getActivity(), openingPriceSMA5s);
-            LVAnswer.setAdapter(arrayAdapter);
-        });
+                    if (openingPriceSMA5s != null) {
+                        ArrayAdapter adapter = new OpeningPriceSMA5ArrayAdapter(
+                                getContext(), getActivity(), openingPriceSMA5s);
+                        LVAnswer.setAdapter(adapter);
+                    }
+                });
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_stock, menu);
-        super.onCreateOptionsMenu(menu,inflater);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -188,7 +198,7 @@ public class StockFragment extends Fragment {
             MaterialAlertDialogBuilder dialogBuilder = createAlertDialogBuilder();
             dialogBuilder.show();
             return true;
-        } else if(menuItem.getItemId() == android.R.id.home){
+        } else if (menuItem.getItemId() == android.R.id.home) {
             Navigation.findNavController(containerView).navigateUp();
             return true;
         }
@@ -200,7 +210,7 @@ public class StockFragment extends Fragment {
                 .setTitle("Do you want to delete " + stockViewModel.getStockFileName().getValue() + "?")
                 .setPositiveButton("Delete", (dialogInterface, i) -> {
                     boolean fileDeleted = stockViewModel.deleteFile();
-                    if(fileDeleted){
+                    if (fileDeleted) {
                         Toast.makeText(getContext(), "File deleted!", Toast.LENGTH_LONG).show();
                         Navigation.findNavController(containerView).navigateUp();
                     } else {
