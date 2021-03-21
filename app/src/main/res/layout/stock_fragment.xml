@@ -24,6 +24,7 @@
         app:titleTextColor="@color/colorWhite" />
 
     <View
+        android:elevation="6dp"
         android:id="@+id/view"
         android:layout_width="match_parent"
         android:layout_height="5dp"
@@ -32,81 +33,94 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/StockToolbar" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-        android:id="@+id/textInputLayout"
+    <LinearLayout
+        android:id="@+id/LLInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/colorWhite"
+         android:elevation="3dp"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="24dp"
-        android:hint="@string/category"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/view">
+        app:layout_constraintTop_toBottomOf="@+id/StockToolbar">
 
-        <AutoCompleteTextView
-            android:textColor="@color/colorBlack"
-            android:background="@color/colorLightGrey"
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:id="@+id/textInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="none"
             app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="24dp"
+            android:hint="Category"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@id/view">
 
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <LinearLayout
-        android:layout_marginTop="24dp"
-        android:id="@+id/linearLayout2"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout">
-
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:id="@+id/LayoutDateRangeStart"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="@string/start_date"
-            android:paddingEnd="4dp">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:focusableInTouchMode="false"
-                android:id="@+id/EDDateRangeStart"
+            <AutoCompleteTextView
+                android:id="@+id/category"
                 android:textColor="@color/colorBlack"
+                android:background="@color/colorLightGrey"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableStart="@drawable/ic_today_24px"
-                android:drawablePadding="8dp" />
+                android:inputType="none"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
         </com.google.android.material.textfield.TextInputLayout>
 
-
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:id="@+id/dateRangeEnd"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_marginTop="24dp"
+            android:id="@+id/linearLayout2"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="@string/end_date"
-            android:paddingStart="4dp">
+            android:orientation="horizontal"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:background="@color/colorWhite"
+            android:paddingBottom="16dp">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:focusableInTouchMode="false"
-                android:textColor="@color/colorBlack"
-                android:id="@+id/EDDateRangeEnd"
-                android:layout_width="match_parent"
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:id="@+id/LayoutDateRangeStart"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:drawableStart="@drawable/ic_today_24px"
-                android:drawablePadding="8dp"/>
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_weight="1"
+                android:hint="Start date"
+                android:paddingEnd="4dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:focusableInTouchMode="false"
+                    android:id="@+id/EDDateRangeStart"
+                    android:textColor="@color/colorBlack"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_today_24px"
+                    android:drawablePadding="8dp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:id="@+id/dateRangeEnd"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="End date"
+                android:paddingStart="4dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:focusableInTouchMode="false"
+                    android:textColor="@color/colorBlack"
+                    android:id="@+id/EDDateRangeEnd"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_today_24px"
+                    android:drawablePadding="8dp"/>
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
     </LinearLayout>
 
     <TextView
@@ -122,7 +136,7 @@
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
+        app:layout_constraintTop_toBottomOf="@+id/LLInput" />
 
     <ListView
         android:background="@color/colorWhite"
