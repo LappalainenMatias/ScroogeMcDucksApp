@@ -81,5 +81,6 @@ This application uses a single Activity which is populated by StockListFragment 
 - StockFileReader reads stock data from a file. 
 - StockItem contains the filename (which is the StockItem's name and a file name in internal storage) and StockStatistics which contain stock data (date, open price, volume...). 
 - StockItemAnalyzer analyses the data the StockItem contain and answers the questions which are written in the Description. 
+
 The project also has some other classes, for example ArrayAdapters which are used for to populate ListViews and some smaller classes which are used for to capsulate data. The project also has unit tests, which test that StockItemAnalyzer returns correct answers.
 
