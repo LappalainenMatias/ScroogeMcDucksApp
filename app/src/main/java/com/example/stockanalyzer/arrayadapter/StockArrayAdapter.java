@@ -47,9 +47,9 @@ public class StockArrayAdapter extends ArrayAdapter<StockItem> implements Filter
 
         TVStockName.setText(stockItem.fileName);
         if (stockItem.stockStatisticByCalendar.keySet().size() != 0) {
-            TVStockDateRange.setText(getContext().getResources().getString(R.string.stock_data_from) + getStocksDateRange(position));
+            TVStockDateRange.setText("Stock data from " + getStocksDateRange(position));
         } else {
-            TVStockDateRange.setText(getContext().getResources().getString(R.string.stock_data_was_not_found));
+            TVStockDateRange.setText("Stock data was not found!");
         }
         return rowView;
     }
@@ -98,6 +98,6 @@ public class StockArrayAdapter extends ArrayAdapter<StockItem> implements Filter
         SimpleDateFormat format_dd_MM_yyyy = new SimpleDateFormat("dd/MM/yyyy");
         String formattedEarlier = format_dd_MM_yyyy.format(dateRange.first.getTime());
         String formattedLatest = format_dd_MM_yyyy.format(dateRange.second.getTime());
-        return formattedEarlier + getContext().getResources().getString(R.string._to_) + formattedLatest;
+        return formattedEarlier + " to " + formattedLatest;
     }
 }
